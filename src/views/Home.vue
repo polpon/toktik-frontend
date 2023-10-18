@@ -1,0 +1,96 @@
+<script type="ts" setup></script>
+
+<template>
+  <div class="d-flex align-center justify-center" style="height: 100vh">
+      <v-sheet width="400" class="mx-auto">
+          <v-form fast-fail @submit.prevent="login">
+              <v-text-field v-model="username" label="User Name"></v-text-field>
+
+              <v-text-field v-model="password" label="password"></v-text-field>
+              <a href="#" class="text-body-2 font-weight-regular">Forgot Password?</a>
+
+              <v-btn type="submit" color="primary" block class="mt-2">Sign in</v-btn>
+
+          </v-form>
+          <div class="mt-2">
+
+              <p class="text-body-2">Don't have an account? <a href="#" @click="this.$router.push({ name: 'register' })">Sign Up</a></p>
+          </div>
+            <v-btn type="submit" color="primary" block class="mt-2" @click="logout">Log out</v-btn>
+            <v-btn type="submit" color="primary" block class="mt-2" @click="test">test</v-btn>
+
+      </v-sheet>
+      <input ref="file" v-on:change="setfile"  type="file">
+  </div>
+</template>
+
+<script>
+import axios from 'axios';
+import { file } from '@babel/types';
+export default {
+  data() {
+      return {
+          username: '',
+          password: '',
+          file_store: null,
+          loading: true,
+      };
+  },
+  methods: {
+    setfile() {
+        this.file_store = this.$refs.file.files[0];
+        console.log(this.file_store["type"])
+        console.log(this.file_store["name"])
+    },
+    logout() {
+        axios.get("/logout")
+    },
+    bare() {
+        axios.post("/upload-completed", {filename: "rajndomoango", filetype: "video/mp4"})
+    },
+    async test() {
+        let loader = this.$loading.show({
+                    // Optional parameters
+                    container: this.fullPage ? null : this.$refs.formContainer,
+                    canCancel: false,
+                    onCancel: this.onCancel,
+                });
+
+        // console.log(this.file_store["bname "])
+
+        const res = await axios.post("/get-presigned-url", {filename: this.file_store["name"], filetype: this.file_store["type"]});
+
+        console.log(this.file_store);
+        if (res.status == 200 && this.file_store != null)
+        {
+            let config = {
+            method: 'put',
+            url: res.data['url'],
+            headers: {
+                'Content-Type': this.file_store['type']
+            },
+            data : this.file_store
+            };
+
+            await axios.request(config)
+            .then((response) => {
+            console.log(JSON.stringify(response.data));
+
+            if (response.status == 200) {
+                axios.post("/upload-completed", {filename: res.data['fn']})
+                // axios.post("/thumbnail", {filename: res.data['fn']})
+                
+                // axios.post("/thumbnail", {filename: "buffer/1bb0cbab-db0f-4894-8bf0-4c84eec1b6dc.mp4", filetype: "video/mp4"})
+                // axios.post("/upload-completed", {filename: "rajndomoango"})
+            }
+            })
+            .catch((error) => {
+            console.log(error);
+            })
+
+        }
+        loader.hide()
+    }
+  },
+}
+</script>
