@@ -1,34 +1,23 @@
+<template>
+<video-player
+    src="https://toktik-s3-videos.sgp1.cdn.digitaloceanspaces.com/test2/master.m3u8"
+    poster="/your-path/poster.jpg"
+    controls
+    :loop="true"
+    :volume="0.6"
+/>
+</template>
+
 <script>
-import axios from 'axios';
-export default {
-    name: 'test',
-    data: () => ({
-        errormsg: ""
-    }),
-    methods: {
-        submitForm() {
-            let form = new FormData(this.$refs.accountForm);
-            const test = {filename: "test.mp4",filetype: "video/mp4"}
-            axios.post("/test", test)
-                // .then((res) => {
-                //     let data = res.data
-                //     console.log(data)
-                //     if(data.success) {
-                //         this.$router.push({ name: 'manage-accounts' });
-                //     }
-                // })
-                // .catch((error) => {
-                //     this.errormsg = "Something happen please try again"
-                // });
-        }
-    },
-    beforeMount() {
-        this.submitForm()
-    },
+// Documentation here Yang:
+// https://github.com/surmon-china/videojs-player
+import { defineComponent } from 'vue'
+import { VideoPlayer } from '@videojs-player/vue'
+import 'video.js/dist/video-js.css'
 
-}
+export default defineComponent({
+    components: {
+    VideoPlayer
+    }
+})
 </script>
-
-<style scoped>
-
-</style>

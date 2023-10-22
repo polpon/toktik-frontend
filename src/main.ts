@@ -9,6 +9,8 @@ import App from './App.vue'
 
 // Composables
 import { createApp } from 'vue'
+import VueVideoPlayer from '@videojs-player/vue'
+import 'video.js/dist/video-js.css'
 import {LoadingPlugin} from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/css/index.css';
 
@@ -21,6 +23,7 @@ axios.defaults.baseURL = '/api';
 
 const app = createApp(App)
 app.use(LoadingPlugin);
+app.use(VueVideoPlayer);
 
 registerPlugins(app)
 
