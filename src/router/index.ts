@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { createRouter, createWebHistory } from 'vue-router'
 
 
@@ -7,7 +8,8 @@ const router = createRouter({
     {
       path: '/login',
       name: 'login',
-      component: () => import('@/views/Login.vue')
+      component: () => import('@/views/Login.vue'),
+      // meta: { checkAuth: true }
     },
     {
       path: '/test',
@@ -17,13 +19,15 @@ const router = createRouter({
     {
       path: '/signup',
       name: 'signup',
-      component: () => import('@/views/SignUp.vue')
+      component: () => import('@/views/SignUp.vue'),
+      // meta: { checkAuth: true }
     },
 
     {
       path: '/',
       name: 'home',
-      component: () => import('@/views/HomePage.vue')
+      component: () => import('@/views/HomePage.vue'),
+      // meta: { requiresAuth: true }
     },
     {
       path: '/video',
@@ -32,5 +36,35 @@ const router = createRouter({
     },
   ]
 })
+
+export async function isAuthenticated() {
+  return await axios.get(`/whoami`)
+    .then(resp => resp.status == 200)
+    .catch(err => false)
+}
+
+router.beforeEach(async (to, from, next) => {
+  if (to.meta.requiresAuth)
+  {
+    // const token = localStorage.getItem('token');
+    if (await isAuthenticated()) {
+      // User is authenticated, proceed to the route
+      next();
+    } else {
+      // User is not authenticated, redirect to login
+      next('/login');
+    }
+  }
+  else if (to.meta.checkAuth)
+  {
+    if (await isAuthenticated()){
+      next('/');
+    } else { next() }
+  }
+  else {
+    // Non-protected route, allow access
+    next();
+  }
+});
 
 export default router

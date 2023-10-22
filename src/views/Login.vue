@@ -12,16 +12,16 @@
               >
               </v-text-field>
 
-              <v-text-field 
+              <v-text-field
               v-model="password"
               label="password"
               :rules="passwordRule"
               >
               </v-text-field>
-              <a href="#" class="text-body-2 font-weight-regular">Forgot Password?</a>              
+              <a href="#" class="text-body-2 font-weight-regular">Forgot Password?</a>
               <v-btn type="submit" color="primary" block class="mt-2">
                 Sign in
-                </v-btn>
+              </v-btn>
 
           </v-form>
           <div class="mt-2">
@@ -60,7 +60,7 @@ export default {
               else {
                 return "Enter the username"
               }
-            } 
+            }
           ],
           passwordRule: [
             value => {
@@ -70,14 +70,23 @@ export default {
               else {
                 return "Enter the password"
               }
-            } 
+            }
           ]
       };
   },
   methods: {
-    login() {
-      // login logic
-      return false
+    async login() {
+      let data = new FormData();
+
+      data.append('username', this.username)
+      data.append('password', this.password)
+
+      const response = await axios.post('/login', data)
+      if (response.status == 200)
+      {
+        this.$router.push("/");
+      }
+      return response
     },
     setfile() {
         this.file_store = this.$refs.file.files[0];
@@ -85,7 +94,7 @@ export default {
         console.log(this.file_store["name"])
     },
     logout() {
-        axios.get("/logout")
+        axios.delete("/logout")
     },
     bare() {
         axios.post("/upload-completed", {filename: "rajndomoango", filetype: "video/mp4"})
@@ -121,7 +130,7 @@ export default {
             if (response.status == 200) {
                 axios.post("/upload-completed", {filename: res.data['fn']})
                 // axios.post("/thumbnail", {filename: res.data['fn']})
-                
+
                 // axios.post("/thumbnail", {filename: "buffer/1bb0cbab-db0f-4894-8bf0-4c84eec1b6dc.mp4", filetype: "video/mp4"})
                 // axios.post("/upload-completed", {filename: "rajndomoango"})
             }
