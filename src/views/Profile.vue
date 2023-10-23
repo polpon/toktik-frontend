@@ -5,7 +5,7 @@
             height: 30vh;">
         <div class="flex justify-center grid grid-cols-12 grid-rows-6 gap-4" style="width: 100%; height: 100%;">
     
-            <div class="col-start-1 col-span-2 row-start-1 row-span-4 place-self-center" style="width: 70%; height: 70%;">
+            <div class="col-start-1 col-span-2 row-start-1 row-span-4 place-self-center" style="width: 55%; height: 70%;">
                 <img
                     class="mr-2 w-6 h-6 rounded-full"
                     style="width: 100%; height: 100%;"
@@ -45,12 +45,17 @@
             </p>
             
         </v-btn>
+        <RouterLink
+            style="text-decoration: none; color: inherit;"
+            :to="{ name: 'upload' }">
+
         <v-btn variant="text" style="width: 50%;
         height: 100%;">
             <p style="height: auto; width: auto;">
                 Upload
             </p>
         </v-btn>
+        </RouterLink>
     </div>
 
     <v-divider class="border-opacity-50"></v-divider>
