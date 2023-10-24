@@ -31,8 +31,8 @@
               <p class="text-body-2">Don't have an account? <a href="#" @click="this.$router.push({ name: 'signup' })">Sign Up</a></p>
             </RouterLink>
           </div>
-            <v-btn type="submit" color="primary" block class="mt-2" @click="logout">Log out</v-btn>
-            <v-btn type="submit" color="primary" block class="mt-2" @click="test">test</v-btn>
+            <v-btn type="submit" color="error" block class="mt-2" @click="logout">Log out</v-btn>
+            <v-btn type="submit" color="error" block class="mt-2" @click="test">test</v-btn>
 
       </v-sheet>
       <input ref="file" v-on:change="setfile"  type="file">

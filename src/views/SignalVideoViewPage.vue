@@ -37,12 +37,12 @@
         
     <v-card style="width: 30%;
             height: 100%;">
-        <article class="p-6 text-base bg-white rounded-lg dark:bg-gray-900">
+        <article class="p-6 text-base bg-white">
                 <footer class="flex justify-between items-center mb-2">
                     <div class="flex items-center">
                         <p class="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold">
                             <img
-                                class="mr-2 w-6 h-6 rounded-full"
+                                class="mr-2 w-12 h-12 rounded-full"
                                 src="https://flowbite.com/docs/images/people/profile-picture-2.jpg"
                                 >
                         </p>
@@ -103,20 +103,24 @@
                 </p>
             </article>
         
-        <v-divider class="border-opacity-50"></v-divider>
+            <!-- <v-divider class="border-opacity-0"></v-divider> -->
 
-        <div style="height: 40px">
-            <v-btn variant="text" style="width: 50%;
+        <div class="bg-white" style="height: 40px">
+            <v-btn variant="text"
+            @click="trigger_comment"
+            style="width: 50%;
             height: 100%;">
                 Comments
             </v-btn>
-            <v-btn variant="text" style="width: 50%;
+            <v-btn variant="text"
+            @click="trigger_video"
+            style="width: 50%;
             height: 100%;">
                 relate video
             </v-btn>
         </div>
 
-        <v-divider class="border-opacity-50"></v-divider>
+        <v-divider class="border-opacity-75"></v-divider>
 
         
 
@@ -126,7 +130,7 @@
             </div>  -->
 
 
-        <div class="comment-list" style="height: 100vh; overflow-y: auto;">
+        <div v-if="this.comment_buttons" class="comment-list bg-white" style="height: 100vh; overflow-y: auto;">
             <v-infinite-scroll overflow-auto :height="300" :items="items" :onLoad="load">
                 <div style="overflow-y: auto;"  v-for="comment in comments" :key="comment">
                     <div class="flex block" style="padding-top: 10px; padding-left: 10px;">
@@ -136,11 +140,30 @@
                             <p class="break-all" style="padding-right: 55px;">{{ comment.comment }}</p>
                         </div>
                     </div>
-
-                    
                 </div>
             </v-infinite-scroll>
         </div>
+
+        <div v-else class="comment-list bg-white" style="height: 100vh; overflow-y: auto;">
+            <v-infinite-scroll overflow-auto :height="300" :items="items" :onLoad="load">
+                <v-row>
+                <v-col
+                    v-for="video in videos"
+                    :key="video"
+                    cols="12"
+                    sm="6"
+                    md="4"
+                    lg="4"
+                    style="padding: 10px;"
+                >
+                    <v-card style="width: 100%; max-width: 300px; height: 220px; background-color: black; display: flex; align-items: center; justify-content: center;">
+                    <v-img :src="video.thumbnail" aspect-ratio="3/4" style="max-width: 100%; max-height: 100%;"></v-img>
+                    </v-card>
+                </v-col>
+                </v-row>
+            </v-infinite-scroll>
+            </div>
+
     </v-card>
     </div>
 
@@ -148,10 +171,19 @@
 
 <script>
 export default {
+    methods: {
+        trigger_comment() {
+            this.comment_buttons = true
+        },
+        trigger_video() {
+            this.comment_buttons = false
+        }
+    },
     data: () => ({
         username: "Michael Gough",
         time: "Feb. 8, 2022",
         message: "You are so cool.",
+        comment_buttons: true,
         itemMenus: [
             {
                 title: 'Edit',
@@ -159,6 +191,131 @@ export default {
             {
                 title: 'Remove',
             },
+        ],
+        videos: [
+        {
+                thumbnail: "./src/assets/toktik.png",
+                link: ""
+            },
+            {
+                thumbnail: "./src/assets/frames-diff-01.png",
+                link: ""
+            },
+            {
+                thumbnail: "./src/assets/frames-diff-01.png",
+                link: ""
+            },
+            {
+                thumbnail: "./src/assets/frames-diff-01.png",
+                link: ""
+            },
+            {
+                thumbnail: "./src/assets/frames-diff-01.png",
+                link: ""
+            },
+            {
+                thumbnail: "./src/assets/frames-diff-01.png",
+                link: ""
+            },
+            {
+                thumbnail: "./src/assets/frames-diff-01.png",
+                link: ""
+            },
+            {
+                thumbnail: "./src/assets/frames-diff-01.png",
+                link: ""
+            },
+
+
+
+
+            {
+                thumbnail: "./src/assets/frames-diff-01.png",
+                link: ""
+            },
+            {
+                thumbnail: "./src/assets/frames-diff-01.png",
+                link: ""
+            },
+            {
+                thumbnail: "./src/assets/frames-diff-01.png",
+                link: ""
+            },
+            {
+                thumbnail: "./src/assets/frames-diff-01.png",
+                link: ""
+            },
+            {
+                thumbnail: "./src/assets/frames-diff-01.png",
+                link: ""
+            },
+            {
+                thumbnail: "./src/assets/frames-diff-01.png",
+                link: ""
+            },
+            {
+                thumbnail: "./src/assets/frames-diff-01.png",
+                link: ""
+            },
+            {
+                thumbnail: "./src/assets/frames-diff-01.png",
+                link: ""
+            },
+            {
+                thumbnail: "./src/assets/frames-diff-01.png",
+                link: ""
+            },
+            {
+                thumbnail: "./src/assets/frames-diff-01.png",
+                link: ""
+            },
+            {
+                thumbnail: "./src/assets/frames-diff-01.png",
+                link: ""
+            },
+            {
+                thumbnail: "./src/assets/frames-diff-01.png",
+                link: ""
+            },
+            {
+                thumbnail: "./src/assets/frames-diff-01.png",
+                link: ""
+            },
+            {
+                thumbnail: "./src/assets/frames-diff-01.png",
+                link: ""
+            },
+            {
+                thumbnail: "./src/assets/frames-diff-01.png",
+                link: ""
+            },
+            {
+                thumbnail: "./src/assets/frames-diff-01.png",
+                link: ""
+            },
+            {
+                thumbnail: "./src/assets/frames-diff-01.png",
+                link: ""
+            },
+            {
+                thumbnail: "./src/assets/frames-diff-01.png",
+                link: ""
+            },
+            {
+                thumbnail: "./src/assets/frames-diff-01.png",
+                link: ""
+            },
+            {
+                thumbnail: "./src/assets/frames-diff-01.png",
+                link: ""
+            },
+            {
+                thumbnail: "./src/assets/frames-diff-01.png",
+                link: ""
+            },
+
+
+
         ],
         comments: [
             {
