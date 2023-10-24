@@ -42,7 +42,6 @@
 <script>
 import axios from 'axios';
 import Navbar from "@/components/Navbar";
-import { file } from '@babel/types';
 
 export default {
   components: {Navbar},
@@ -85,6 +84,9 @@ export default {
       if (response.status == 200)
       {
         this.$router.push("/");
+      } else {
+        console.warn(response.data)
+        // TODO: Handle error msg
       }
       return response
     },
@@ -95,9 +97,6 @@ export default {
     },
     logout() {
         axios.delete("/logout")
-    },
-    bare() {
-        axios.post("/upload-completed", {filename: "rajndomoango", filetype: "video/mp4"})
     },
     async test() {
         let loader = this.$loading.show({

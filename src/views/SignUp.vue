@@ -38,7 +38,7 @@
             </v-sheet>
         </div>
 </template>
-    
+
 <script>
 import axios from 'axios';
 import Navbar from "@/components/Navbar";
@@ -58,7 +58,7 @@ export default {
               else {
                 return "Enter the username"
               }
-            } 
+            }
           ],
           passwordRule: [
             value => {
@@ -68,7 +68,7 @@ export default {
               else {
                 return "Enter the password"
               }
-            } 
+            }
           ],
           confirmPasswordRule: [
             value => {
@@ -78,13 +78,29 @@ export default {
                 else {
                     return "does not match the password"
                 }
-            } 
+            }
 
           ]
       };
   },
   methods: {
-    
+    async register()
+    {
+      let data = new FormData();
+
+      data.append('username', this.username)
+      data.append('password', this.password)
+
+      const response = await axios.post('/register', data)
+      if (response.status == 200)
+      {
+        this.$router.push("/");
+      } else {
+        console.warn(response.data)
+        // TODO: Handle error msg
+      }
+      return response
+    }
   }
 }
 </script>
