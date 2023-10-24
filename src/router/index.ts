@@ -32,7 +32,7 @@ const router = createRouter({
     {
       path: '/video',
       name: 'video',
-      component: () => import('@/views/SignalVideoViewPage.vue')
+      component: () => import('@/views/SingleVideoViewPage.vue')
     },
     {
       path: '/profile',
