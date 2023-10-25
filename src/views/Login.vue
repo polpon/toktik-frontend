@@ -42,6 +42,7 @@
 <script>
 import axios from 'axios';
 import Navbar from "@/components/Navbar";
+import { file } from '@babel/types';
 
 export default {
   components: {Navbar},
@@ -92,6 +93,7 @@ export default {
     },
     setfile() {
         this.file_store = this.$refs.file.files[0];
+        console.log(this.file_store)
         console.log(this.file_store["type"])
         console.log(this.file_store["name"])
     },
@@ -108,7 +110,11 @@ export default {
 
         // console.log(this.file_store["bname "])
 
-        const res = await axios.post("/get-presigned-url", {filename: this.file_store["name"], filetype: this.file_store["type"]});
+        const res = await axios.post("/get-presigned-url", {
+          uuid: this.file_store["name"],
+          size: this.file_store["size"],
+          filetype: this.file_store["type"],
+        });
 
         console.log(this.file_store);
         if (res.status == 200 && this.file_store != null)
@@ -127,11 +133,14 @@ export default {
             console.log(JSON.stringify(response.data));
 
             if (response.status == 200) {
-                axios.post("/upload-completed", {filename: res.data['fn']})
-                // axios.post("/thumbnail", {filename: res.data['fn']})
-
-                // axios.post("/thumbnail", {filename: "buffer/1bb0cbab-db0f-4894-8bf0-4c84eec1b6dc.mp4", filetype: "video/mp4"})
-                // axios.post("/upload-completed", {filename: "rajndomoango"})
+                axios.post("/upload-completed", {
+                  uuid: res.data['filename'],
+                  filename: res.data['filename'].concat(".",res.data['extension']),
+                  size: this.file_store['size'],
+                  filetype: this.file_store['type'],
+                  extension: res.data['extension'],
+                  owner_uuid: res.data['owner_uuid'],
+                })
             }
             })
             .catch((error) => {
