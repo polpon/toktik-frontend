@@ -13,6 +13,7 @@ import VueVideoPlayer from '@videojs-player/vue'
 import 'video.js/dist/video-js.css'
 import {LoadingPlugin} from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/css/index.css';
+import VueSmoothScroll from 'vue3-smooth-scroll'
 
 // Plugins
 import { registerPlugins } from '@/plugins'
@@ -57,6 +58,7 @@ createAuthRefreshInterceptor(
 const app = createApp(App)
 app.use(LoadingPlugin);
 app.use(VueVideoPlayer);
+app.use(VueSmoothScroll)
 
 registerPlugins(app)
 
