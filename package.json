@@ -7,7 +7,7 @@
     "dev:css": "npx tailwindcss -i ./src/input.css -o ./dist/output.css --watch",
     "dev:vite": "vite",
     "dev": "run-p dev:*",
-    "build": "vue-tsc --noEmit && vite build",
+    "build": "vue-tsc --noEmit && npm run predev && vite build",
     "preview": "vite preview",
     "lint": "eslint . --fix --ignore-path .gitignore"
   },
