@@ -2,9 +2,9 @@
 
 <template>
 <Navbar/>
-  <div class="d-flex align-center justify-center" style="height: 100vh">
-      <v-sheet width="400" class="mx-auto">
-          <v-form fast-fail @submit.prevent="login">
+  <div class="d-flex align-center justify-center rounded-md" style="height: 100vh">
+      <v-sheet width="450" class="mx-auto rounded-md">
+          <v-form class="rounded-md" fast-fail @submit.prevent="login">
               <v-text-field
               v-model="username"
               label="User Name"
@@ -15,6 +15,7 @@
               <v-text-field
               v-model="password"
               label="password"
+              type="password"
               :rules="passwordRule"
               >
               </v-text-field>
@@ -31,11 +32,11 @@
               <p class="text-body-2">Don't have an account? <a href="#" @click="this.$router.push({ name: 'signup' })">Sign Up</a></p>
             </RouterLink>
           </div>
-            <v-btn type="submit" color="error" block class="mt-2" @click="logout">Log out</v-btn>
-            <v-btn type="submit" color="error" block class="mt-2" @click="test">test</v-btn>
+            <!-- <v-btn type="submit" color="error" block class="mt-2" @click="logout">Log out</v-btn>
+            <v-btn type="submit" color="error" block class="mt-2" @click="test">test</v-btn> -->
 
       </v-sheet>
-      <input ref="file" v-on:change="setfile"  type="file">
+      <!-- <input ref="file" v-on:change="setfile"  type="file"> -->
   </div>
 </template>
 

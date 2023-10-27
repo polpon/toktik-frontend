@@ -2,7 +2,7 @@
     <Navbar/>
         <div class="d-flex align-center justify-center" style="height: 100vh">
             <v-sheet width="400" class="mx-auto">
-                <v-form>
+                <v-form fast-fail @submit.prevent="register">
                     <v-text-field
                               v-model="username"
                               name="username"
