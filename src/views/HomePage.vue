@@ -1,9 +1,176 @@
 <template>
     <div v-if="dialog" >
-        <v-btn @click="closeDialog">
-            close dialog
-        </v-btn>
-        apisjd;qwe
+        <div class="flex flex-row h-screen hover:flex-row">
+            <div class="flex justify-center grid grid-cols-6 grid-rows-14 gap-4" style="width: 70%; height: 100%;">
+                <div class="row-start-1 col-start-1 place-self-center" style="height: 100% width: 50%;">
+                    <v-btn @click="closeDialog" variant="text" icon style="height: 100% width: 50%;">
+                        <v-icon icon="mdi-alpha-x-circle" size=300%></v-icon>
+                    </v-btn>
+                </div>
+
+                <div class="col-start-2 col-span-4 row-start-1 row-span-14">
+                    <video-player
+                        :src="'https://toktik-s3-videos.sgp1.cdn.digitaloceanspaces.com/'+ this.currentVideo +'/master.m3u8'"
+                        :poster="'https://toktik-s3-videos.sgp1.cdn.digitaloceanspaces.com/'+ this.currentVideo +'/thumbnail.png'"
+                        controls
+                        :loop="true"
+                        rossorigin="use-credentials"
+                        :volume="0.6"
+                        style=" width: 100%;
+                        height: 100%;"
+                    />
+                </div>
+
+                <div v-if="disableButtonUp == false" class="row-start-7 col-start-6  place-self-center" style="height: 100% width: 50%;">
+                    <v-btn @click="goUp" variant="text" icon style="height: 100% width: 50%;">
+                        <v-icon icon="mdi-arrow-up-bold-circle" size=300%></v-icon>
+                    </v-btn>
+                </div>
+                <div v-if="disableButtonDown  == false" class="row-start-8 col-start-6 place-self-center" style="height: 100% width: 50%;">
+                    <v-btn @click="goDown" variant="text" icon style="height: 100% width: 50%;">
+                        <v-icon icon="mdi-arrow-down-bold-circle" size=300%></v-icon>
+                    </v-btn>
+                </div>
+                
+
+            
+            </div>
+            
+        <v-card style="width: 30%;
+                height: 100%;">
+            <article class="p-6 text-base bg-white">
+                    <footer class="flex justify-between items-center mb-2">
+                        <div class="flex items-center">
+                            <p class="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold">
+                                <img
+                                    class="mr-2 w-12 h-12 rounded-full"
+                                    src="https://flowbite.com/docs/images/people/profile-picture-2.jpg"
+                                    >
+                            </p>
+                            <p>
+                                {{ this.username }}
+                            </p>
+                            <p class="text-xs text-gray-500" style="padding: 10px;">
+                                <time pubdate datetime="2022-02-08"
+                                    title="February 8th, 2022">
+                                    {{ this.time }}
+                                </time>
+                            </p>
+                        </div>
+                            <button data-dropdown-toggle="dropdownDotsHorizontal"
+                            class="inline-flex
+                                items-center
+                                p-2 text-sm
+                                font-medium
+                                text-center
+                                text-gray-900
+                                bg-white
+                                rounded-lg
+                                hover:bg-gray-100
+                                focus:ring-4
+                                focus:outline-none
+                                dark:text-white
+                                focus:ring-gray-50
+                                dark:bg-gray-800
+                                dark:hover:bg-gray-700
+                                dark:focus:ring-gray-600"
+                            type="button"> 
+                            <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 3">
+                                <path d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z"/>
+                            </svg>
+
+                            <v-menu activator="parent">
+                            <v-list>
+                                <v-list-item
+                                v-for="item in itemMenus"
+                                :key="item"
+                                >
+                                <v-list-item-title>
+                                <v-btn variant="flat"
+                                >
+                                {{ item.title }}
+                                </v-btn>
+
+
+                                </v-list-item-title>
+                                </v-list-item>
+                            </v-list>
+                            </v-menu>
+                        </button>
+
+                    </footer>
+                    <p>
+                        {{ this.message }}
+                    </p>
+                </article>
+            
+                <!-- <v-divider class="border-opacity-0"></v-divider> -->
+
+            <div class="bg-white" style="height: 40px">
+                <v-btn variant="text"
+                @click="trigger_comment"
+                style="width: 50%;
+                height: 100%;">
+                    Comments
+                </v-btn>
+                <v-btn variant="text"
+                @click="trigger_video"
+                style="width: 50%;
+                height: 100%;">
+                    relate video
+                </v-btn>
+            </div>
+
+            <v-divider class="border-opacity-75"></v-divider>
+
+            
+
+                <!-- TODO add if-else stagement -->
+                <!-- <div>
+                    No comments to display.
+                </div>  -->
+
+
+            <div v-if="this.comment_buttons" class="comment-list bg-white" style="height: 100vh; overflow-y: auto;">
+                <v-infinite-scroll overflow-auto :height="300" :items="items" :onLoad="load">
+                    <div style="overflow-y: auto;"  v-for="comment in comments" :key="comment">
+                        <div class="flex block" style="padding-top: 10px; padding-left: 10px;">
+                            <img src="/src/assets/toktik.png" style="height: 55px; width: 70px; padding-left: 10px; padding-right: 10px; padding-top: 5px;">
+                            <div>
+                                {{ comment.username }}
+                                <p class="break-all" style="padding-right: 55px;">{{ comment.comment }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </v-infinite-scroll>
+            </div>
+
+            <div v-else class="comment-list bg-white" style="height: 100vh; overflow-y: auto;">
+                <v-infinite-scroll overflow-auto :height="300" :items="items" :onLoad="load">
+                    <v-row>
+                    <v-col
+                        v-for="(content, index) in contents"
+                        :key="index"
+                        cols="12"
+                        sm="6"
+                        md="4"
+                        lg="4"
+                        style="padding: 10px;"
+                    >
+                        <v-card  @click="openVideoInRelateVideo(content.thumbnail, index)" style="width: 100%; max-width: 300px; height: 220px; background-color: black; display: flex; align-items: center; justify-content: center;">
+                            <!-- <div class="justify-center flex items-center justify-center" > -->
+                                <v-img :src="'https://toktik-s3-videos.sgp1.digitaloceanspaces.com/' + content.thumbnail + '/thumbnail.png'" aspect-ratio="3/4" style="max-width: 100%; max-height: 100%;"></v-img>
+
+                            <!-- </div> -->
+                        
+                        </v-card>
+                    </v-col>
+                    </v-row>
+                </v-infinite-scroll>
+                </div>
+
+        </v-card>
+        </div>
     </div>
 
 
@@ -37,7 +204,7 @@
                             </p>
                         </div>
 
-                        <div class="justify-center flex items-center justify-center" @click="openDialog(index)">
+                        <div class="justify-center flex items-center justify-center" @click="openDialog(index, content.thumbnail)">
                         <img v-bind:src="'https://toktik-s3-videos.sgp1.digitaloceanspaces.com/' + content.thumbnail + '/thumbnail.png'" class="w-1/2 place-content-center h-128">
                         </div>
                         <div class="px-6 pt-4 pb-2">
@@ -78,25 +245,79 @@ export default {
         trigger_video() {
             this.comment_buttons = false
         },
-        openDialog(index) {
+        openDialog(index, filename) {
+        console.log(this.contents.length)
         this.dialog = true;
+        this.currentVideo = filename
         this.currentScrollVideo = index
+        this.currentIndex = index
+        // this.disableButtonDown = false
+        // this.disableButtonUp = false
+        this.disableOnOffbuttons()
+                // console.log(this.contents)
+        // console.log(this.contents[0])
+        },
+        disableOnOffbuttons() {
+        if (this.currentIndex == 0) {
+            this.disableButtonUp = true
+        } else {
+            this.disableButtonUp = false
+        }
+        if (this.currentIndex == ((this.contents.length) - 1)) {
+            this.disableButtonDown = true
+        } else {
+            this.disableButtonDown = false
+        }
+
+        },
+        goDown() {
+            console.log("goDown")
+            console.log(this.currentIndex)
+            // handle the out of order video
+            
+
+            if (this.currentIndex < this.contents.length - 1) {
+                this.currentIndex = this.currentIndex + 1
+                this.currentVideo = this.contents[this.currentIndex].thumbnail
+                // this.disableButtonUp = false
+            } else {
+                // this.disableButtonDown = true
+            }
+            this.disableOnOffbuttons()
+        },
+        goUp() {
+            console.log("goUp")
+            console.log(this.currentIndex)
+            
+            if (this.currentIndex > 0) {
+                this.currentIndex = this.currentIndex - 1
+                this.currentVideo = this.contents[this.currentIndex].thumbnail
+                // this.disableButtonDown = false
+            } else {
+                // this.disableButtonUp = true
+            }
+            this.disableOnOffbuttons()
+        },
+        openVideoInRelateVideo(filename, index) {
+            this.currentVideo = filename;
+            this.dialog = true;
+            this.currentIndex = index;
+            console.log(this.currentIndex)
+            this.disableOnOffbuttons();
+
+            // this.dialog = true;
+            // this.currentVideo = filename
+            // this.currentScrollVideo = index
+            // this.currentIndex = index
+            // // this.disableButtonDown = false
+            // // this.disableButtonUp = false
+            // this.disableOnOffbuttons()
         },
         closeDialog() {
         this.dialog = false;
         
-        // this.scrollToMyIndex()
         },
-        // scrollToMyIndex() {
-        
-        // console.log(this.currentScrollVideo)
 
-        // this.$refs.$refs['index_' + this.currentScrollVideo].value.scrollIntoView({ behavior: 'smooth' })
-        // // this.$smoothScroll({
-        // // scrollTo: this.currentScrollVideo, // scrollTo is also allowed to be number
-        // // hash: '#sampleHash' // required if updateHistory is true
-        // // })
-        // },
         scrollToMyIndex() {
         console.log(this.currentScrollVideo)
         const [el] = this.$refs[this.currentScrollVideo];
@@ -107,13 +328,17 @@ export default {
     },
     data: () => ({
         dialog: false,
-        currentScrollVideo: "", // Initialize scroll position
+        currentScrollVideo: "",
+        currentVideo: "",
+        currentIndex: "",
+        disableButtonUp: false,
+        disableButtonDown: false,
         contents: [
-            // {
+            {
             //     title: '',
             //     subtitle: "",
-            //     thumbnail: ""
-            // },            
+                thumbnail: "../src/assets/input.mp4",
+            },            
         ],
 
         username: "Michael Gough",
