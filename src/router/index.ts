@@ -1,15 +1,15 @@
 import axios from 'axios';
 import { createRouter, createWebHistory } from 'vue-router'
-
+import type { CustomAxiosRequestConfig } from 'axios-auth-refresh/dist/utils';
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHistory(),
   routes: [
     {
       path: '/login',
       name: 'login',
       component: () => import('@/views/Login.vue'),
-      // meta: { checkAuth: true }
+      meta: { checkAuth: true }
     },
     {
       path: '/test',
@@ -20,38 +20,40 @@ const router = createRouter({
       path: '/signup',
       name: 'signup',
       component: () => import('@/views/SignUp.vue'),
-      // meta: { checkAuth: true }
+      meta: { checkAuth: true }
     },
 
     {
       path: '/',
       name: 'home',
       component: () => import('@/views/HomePage.vue'),
-      // meta: { requiresAuth: true }
+      meta: { requiresAuth: true }
     },
     {
       path: '/video',
       name: 'video',
       component: () => import('@/views/SingleVideoViewPage.vue'),
-      // meta: { requiresAuth: true }
+      meta: { requiresAuth: true }
     },
     {
       path: '/profile',
       name: 'profile',
       component: () => import('@/views/Profile.vue'),
-      // meta: { requiresAuth: true }
+      meta: { requiresAuth: true }
     },
     {
       path: '/upload',
       name: 'upload',
       component: () => import('@/views/Upload.vue'),
-      // meta: { requiresAuth: true }
+      meta: { requiresAuth: true }
     },
   ]
 })
 
 export async function isAuthenticated() {
-  return await axios.get(`/whoami`)
+  const customAxiosRequestConfig: CustomAxiosRequestConfig = { skipAuthRefresh: true };
+
+  return await axios.get('/whoami', customAxiosRequestConfig)
     .then(resp => resp.status == 200)
     .catch(err => false)
 }
