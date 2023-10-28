@@ -9,21 +9,52 @@
         <div>
             <RouterLink
             style="text-decoration: none; color: inherit;"
-            :to="{ name: 'login' }" id="user">
-            <v-btn variant="flat" color="primary" style="margin:5px; margin-right: 10px;">
+            :to="{ name: 'login' }">
+            <v-btn v-if="getLoginStatus() == false" variant="flat" color="primary" style="margin:5px; margin-right: 10px;">
             Login
             </v-btn>
             </RouterLink>
             
             <RouterLink
                 style="text-decoration: none; color: inherit;"
-                :to="{ name: 'signup' }" id="user">
-            <v-btn variant="flat" color="primary" style="margin:5px; margin-right: 10px;">
+                :to="{ name: 'signup' }">
+            <v-btn v-if="getLoginStatus() == false"  variant="flat" color="primary" style="margin:5px; margin-right: 10px;">
               Sign up
             </v-btn>
             </RouterLink>
+            <RouterLink
+                style="text-decoration: none; color: inherit;"
+                :to="{ name: 'profile' }">
+            <v-btn v-if="getLoginStatus()" variant="flat" color="primary" style="margin:5px; margin-right: 10px;">
+              Profile
+            </v-btn>
+            </RouterLink>
+            <!-- TODO: add Logout -->
           </div>
  
       </v-app-bar>
 </template>
+
+<script>
+
+// import store from './store'
+
+export default {
+  // data: () => ({
+  //   getLoginStatus: this.$store.state.logined,
+
+  // }),
+  methods: {
+    getLoginStatus() {
+      console.log(this.$store.state.logined)
+      return this.$store.state.logined
+    }
+
+  },
+  // beforeMount() {
+  //   this.getLoginStatus()
+  //   }
+}
+
+</script>
 

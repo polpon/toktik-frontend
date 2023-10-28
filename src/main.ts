@@ -21,6 +21,7 @@ import { registerPlugins } from '@/plugins'
 import axios from 'axios';
 import createAuthRefreshInterceptor from 'axios-auth-refresh';
 import router from './router';
+import store from './store';
 
 axios.defaults.baseURL = '/api';
 
@@ -59,7 +60,7 @@ const app = createApp(App)
 app.use(LoadingPlugin);
 app.use(VueVideoPlayer);
 app.use(VueSmoothScroll)
-
+app.use(store)
 registerPlugins(app)
 
 app.mount('#app')
