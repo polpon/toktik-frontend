@@ -57,46 +57,51 @@ const router = createRouter({
   ]
 })
 
-export async function isAuthenticated() {
+export async function isAuthenticated(to) {
   const customAxiosRequestConfig: CustomAxiosRequestConfig = { skipAuthRefresh: true };
 
   return await axios.get('/whoami', customAxiosRequestConfig)
     .then(resp => {
-    console.log(resp)
-
-    return resp.status == 200
+    const username = resp.data.username
+    const videos = resp.data.videos
+    return [resp.status == 200 ,username, videos]
     })
     .catch(err => false)
 }
 
 router.beforeEach(async (to, from, next) => {
+  const condition = await isAuthenticated(to)
   if (to.meta.requiresAuth)
   {
     // const token = localStorage.getItem('token');
-    if (await isAuthenticated()) {
+    if (condition[0]) {
       // User is authenticated, proceed to the route
       store.commit('login')
-      console.log(store.state.logined)
+
+      if (to.name == 'profile') {
+        const username = condition[1]
+        const videos = condition[2]
+        if (!(videos.length == 0)) {
+          store.commit('get_user_data', {username, videos}) 
+        }
+      }
       next();
 
     } else {
       // User is not authenticated, redirect to login
       store.commit('logout')
-      console.log(store.state.logined)
       next('/login');
       
     }
   }
   else if (to.meta.checkAuth)
   {
-    if (await isAuthenticated()){
+    if (condition[0]){
       store.commit('login')
-      console.log(store.state.logined)
       next('/');
 
     } else {
       store.commit('logout')
-      console.log(store.state.logined)
       next() 
 
     }
@@ -104,7 +109,6 @@ router.beforeEach(async (to, from, next) => {
   else {
     // Non-protected route, allow access
     store.commit('logout')
-    console.log(store.state.logined)
     next();
 
   }
