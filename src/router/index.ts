@@ -13,6 +13,12 @@ const router = createRouter({
       meta: { checkAuth: true }
     },
     {
+      path: '/logout',
+      name: 'logout',
+      component: () => import('@/views/Logout.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
       path: '/test',
       name: 'test',
       component: () => import('@/views/Test.vue')

@@ -29,7 +29,19 @@
               Profile
             </v-btn>
             </RouterLink>
-            <!-- TODO: add Logout -->
+            <RouterLink
+                style="text-decoration: none; color: inherit;"
+                :to="{ name: 'logout' }"
+            >
+              <v-btn v-if="getLoginStatus()" @click="logout" variant="flat" color="primary" style="margin:5px; margin-right: 10px;">
+                Logout
+              </v-btn>
+            </RouterLink>
+            
+
+              
+
+            
           </div>
  
       </v-app-bar>
