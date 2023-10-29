@@ -66,13 +66,14 @@
                 <div style="overflow-y: auto;"  v-for="video in videos" :key="video">
                     
                     <div class="flex block" style="padding-top: 10px; padding-left: 10px;">
-                        <img v-bind:src="video.thumbnail + ''"
+                        <img v-bind:src="'https://toktik-s3-videos.sgp1.digitaloceanspaces.com/' + video.thumbnail + '/thumbnail.png'"
+                        
                         class="place-self-center"
                         style="height: 20%; width: 20%; padding-left: 10px; padding-right: 10px; padding-top: 5px;"
                         >
-                        <div class="place-self-center" style="font-size: 2.2vh;">
+                        <!-- <div class="place-self-center" style="font-size: 2.2vh;">
                             {{ video.name }}    
-                        </div>     
+                        </div>      -->
                         <v-spacer></v-spacer>
                         <div class="place-self-center" style="font-size: 2.2vh;">
                             <p class="break-all" style="padding-right: 55px;">Status: {{ video.status }}</p>
@@ -107,120 +108,21 @@ export default {
     components: {Navbar, Sidebar,},
 
     data: () => ({
-        username: "Michael Gough",
+        username: "",
+        
         videos: [
             {
-                name: "super cool video",
+                // name: "super cool video",
                 status: "done",
                 thumbnail: "./src/assets/frames-diff-01.png"
             },
-            {
-                name: "super cool video",
-                status: "done",
-                thumbnail: "./src/assets/frames-diff-01.png"
-            },
-            {
-                name: "super cool video",
-                status: "done",
-                thumbnail: "./src/assets/frames-diff-01.png"
-            },
-            {
-                name: "super cool video",
-                status: "done",
-                thumbnail: "./src/assets/frames-diff-01.png"
-            },
-            {
-                name: "super cool video",
-                status: "done",
-                thumbnail: "./src/assets/frames-diff-01.png"
-            },
-            {
-                name: "super cool video",
-                status: "done",
-                thumbnail: "./src/assets/frames-diff-01.png"
-            },
-            {
-                name: "super cool video",
-                status: "done",
-                thumbnail: "./src/assets/frames-diff-01.png"
-            },
-            {
-                name: "super cool video",
-                status: "done",
-                thumbnail: "./src/assets/frames-diff-01.png"
-            },
-            {
-                name: "super cool video",
-                status: "done",
-                thumbnail: "./src/assets/frames-diff-01.png"
-            },
-            {
-                name: "super cool video",
-                status: "done",
-                thumbnail: "./src/assets/frames-diff-01.png"
-            },
-            {
-                name: "super cool video",
-                status: "done",
-                thumbnail: "./src/assets/frames-diff-01.png"
-            },
-            {
-                name: "super cool video",
-                status: "done",
-                thumbnail: "./src/assets/frames-diff-01.png"
-            },
-            {
-                name: "super cool video",
-                status: "done",
-                thumbnail: "./src/assets/frames-diff-01.png"
-            },
-            {
-                name: "super cool video",
-                status: "done",
-                thumbnail: "./src/assets/frames-diff-01.png"
-            },
-            {
-                name: "super cool video",
-                status: "done",
-                thumbnail: "./src/assets/frames-diff-01.png"
-            },
-            {
-                name: "super cool video",
-                status: "done",
-                thumbnail: "./src/assets/frames-diff-01.png"
-            },
-            {
-                name: "super cool video",
-                status: "done",
-                thumbnail: "./src/assets/frames-diff-01.png"
-            },
-            {
-                name: "super cool video",
-                status: "done",
-                thumbnail: "./src/assets/frames-diff-01.png"
-            },
-            {
-                name: "super cool video",
-                status: "done",
-                thumbnail: "./src/assets/frames-diff-01.png"
-            },
-            {
-                name: "super cool video",
-                status: "done",
-                thumbnail: "./src/assets/frames-diff-01.png"
-            },
-            {
-                name: "super cool video",
-                status: "done",
-                thumbnail: "./src/assets/frames-diff-01.png"
-            },
-            {
-                name: "super cool video",
-                status: "done",
-                thumbnail: "./src/assets/frames-diff-01.png"
-            },
-            
         ],
     }),
+    beforeMount() {
+      this.username = this.$store.state.username
+      this.videos = this.$store.state.videos
+      
+    }
 }
+
 </script>

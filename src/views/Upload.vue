@@ -16,8 +16,8 @@
                 </v-text-field>
 
                 <v-textarea clearable 
-                v-model="subtitle"
-                label="subtitle"
+                v-model="description"
+                label="description"
                 
                 >
 
@@ -64,7 +64,7 @@ export default {
     data: () => ({
         file_store: null,
         title: "",
-        subtitle: "",
+        description: "",
         fileRules: [
           value => {
                 if (value) {
@@ -105,6 +105,7 @@ export default {
       },
       async submitFrom() {
         this.test()
+        this.$router.push('/profile')
       },
       async test() {
         console.log("Upload file")
@@ -123,7 +124,7 @@ export default {
           size: this.file_store["size"],
           filetype: this.file_store["type"],
           title: this.title,
-          subtitle: this.subtitle
+          description: this.description
         });
 
         console.log(this.file_store);
