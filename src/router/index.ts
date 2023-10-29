@@ -57,34 +57,30 @@ const router = createRouter({
   ]
 })
 
-export async function isAuthenticated(to) {
+export async function isAuthenticated() {
   const customAxiosRequestConfig: CustomAxiosRequestConfig = { skipAuthRefresh: true };
 
   return await axios.get('/whoami', customAxiosRequestConfig)
-    .then(resp => {
-    const username = resp.data.username
-    const videos = resp.data.videos
-    return [resp.status == 200 ,username, videos]
-    })
+    .then(resp => { return resp.status == 200})
     .catch(err => false)
+}
+export async function getData() {
+  await axios.get('/whoami')
+    .then(resp => {
+      const username = resp.data.username
+      const videos: Array<string> = resp.data.videos
+      store.commit('get_user_data', {username, videos})
+    })
 }
 
 router.beforeEach(async (to, from, next) => {
-  const condition = await isAuthenticated(to)
   if (to.meta.requiresAuth)
   {
     // const token = localStorage.getItem('token');
-    if (condition[0]) {
+    if (await isAuthenticated()) {
       // User is authenticated, proceed to the route
+      getData();
       store.commit('login')
-
-      if (to.name == 'profile') {
-        const username = condition[1]
-        const videos = condition[2]
-        if (!(videos.length == 0)) {
-          store.commit('get_user_data', {username, videos}) 
-        }
-      }
       next();
 
     } else {
@@ -96,7 +92,7 @@ router.beforeEach(async (to, from, next) => {
   }
   else if (to.meta.checkAuth)
   {
-    if (condition[0]){
+    if (await isAuthenticated()){
       store.commit('login')
       next('/');
 

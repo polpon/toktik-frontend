@@ -1,17 +1,20 @@
 import { createStore } from 'vuex'
+export interface State {
+  logined: boolean,
+  username: string,
+  videos: { status: string; thumbnail: string; }[]
+}
+
 const store = createStore({
     state () {
       return {
         logined: false,
         username: "",
         videos: [
-            // {
-            //     status: '',
-            //     title: '',
-            //     description: '',
-            //     name: '',
-            //     
-            // }
+          {
+            status: "",
+            thumbnail: ""
+          }
         ],
       }
     },
@@ -21,12 +24,13 @@ const store = createStore({
         const temps_video = []
         for (let i = 0; i < videos.length; i++) {
           const video = videos[i]
-
+          const status: string = video.status
+          const thumbnail: string = video.uuid
           const video_data = {
             // title: video.title,
-            status: video.status,
+            status: status,
             // description: video.description,
-            thumbnail: video.uuid,
+            thumbnail: thumbnail,
           }
           temps_video.push(video_data)
         }
