@@ -25,6 +25,7 @@ import store from './store';
 
 axios.defaults.baseURL = '/api';
 
+
 // Function that will be called to refresh authorization
 const refreshAuthLogic = async () => {
     await axios.get('/refresh').then(() => {
@@ -57,7 +58,7 @@ XMLHttpRequest.prototype.open = function (
 ) {
   // Add your logic here to capture or intercept the XHR requests.
 
-  if (url.includes("http://localhost:8000/api/m3u8/")) {
+  if (url.includes("/api/m3u8/")) {
     console.log('XHR request intercepted. Method:', method, 'URL:', url);
     // If it matches, read the `access_token` from cookies and add it to the request headers
     // Ensure that credentials are sent with the XHR request

@@ -10,8 +10,8 @@
 <VideoPlayer
       type="default"
       @pause="processPause"
-      previewImageLink="poster.webp"
-      link="http://localhost:8000/api/m3u8/static/a98c6b2e-f574-44f6-b492-7e77311ae757/master.m3u8"
+      previewImageLink="/api/static/a98c6b2e-f574-44f6-b492-7e77311ae757/thumbnail.png"
+      link="/api/m3u8/static/a98c6b2e-f574-44f6-b492-7e77311ae757/master.m3u8"
       :isMuted="false"
       :isControls="true"
   />
@@ -22,7 +22,6 @@
 // https://github.com/LeonidShv/vue-hls-video-player/tree/main
 import { defineComponent } from 'vue'
 import { VideoPlayer } from 'vue-hls-video-player';
-// import 'video.js/dist/video-js.css'
 
 export default defineComponent({
     components: {

@@ -20,8 +20,8 @@
                     <VideoPlayer
                         type="default"
                         @pause="processPause"
-                        previewImageLink="poster.webp"
-                        :link="'http://localhost:8000/api/m3u8/static/'+ this.currentVideo +'master.m3u8'"
+                        :previewImageLink="'/api/static/'+ this.currentVideo +'thumbnail.png'"
+                        :link="'/api/m3u8/static/'+ this.currentVideo +'master.m3u8'"
                         :isMuted="false"
                         :isControls="true"
                         style=" width: 100%;
