@@ -184,7 +184,6 @@
 
 
 
-    <v-btn v-if="dialog == false"  @click="scrollToMyIndex">Test Scroll </v-btn>
 
 
 
@@ -342,7 +341,7 @@ export default {
         },
         closeDialog() {
         this.dialog = false;
-        
+        setTimeout(() => this.scrollToMyIndex(), 1000);
         },
 
         scrollToMyIndex() {
