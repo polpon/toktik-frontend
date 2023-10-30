@@ -10,8 +10,8 @@
 
                 <div class="col-start-2 col-span-4 row-start-1 row-span-14">
                     <video-player
-                        :src="'https://toktik-s3-videos.sgp1.cdn.digitaloceanspaces.com/'+ this.currentVideo +'/master.m3u8'"
-                        :poster="'https://toktik-s3-videos.sgp1.cdn.digitaloceanspaces.com/'+ this.currentVideo +'/thumbnail.png'"
+                        :src="'http://localhost:8000/api/m3u8/static/'+ this.currentVideo +'master.m3u8'"
+                        :poster="'https://toktik-s3-videos.sgp1.cdn.digitaloceanspaces.com/'+ this.currentVideo +'thumbnail.png'"
                         controls
                         :loop="true"
                         rossorigin="use-credentials"
@@ -37,8 +37,8 @@
             </div>
             
         <v-card style="width: 30%;
-                height: 100%;">
-            <article class="p-6 text-base bg-white">
+                height: 100%;">          
+                <article class="p-6 text-base bg-white" style="max-height: 25vh;  overflow: auto;">
                     <footer class="flex justify-between items-center mb-2">
                         <div class="flex items-center">
                             <p class="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold">
@@ -102,8 +102,7 @@
                     <p>
                         {{ this.message }}
                     </p>
-                </article>
-            
+                </article>            
                 <!-- <v-divider class="border-opacity-0"></v-divider> -->
 
             <div class="bg-white" style="height: 40px">
@@ -132,7 +131,7 @@
 
 
             <div v-if="this.comment_buttons" class="comment-list bg-white" style="height: 100vh; overflow-y: auto;">
-                <v-infinite-scroll overflow-auto :height="300" :items="items" :onLoad="load">
+                <v-infinite-scroll overflow-auto :height="300" :items="items" :onLoad="get_videos">
                     <div style="overflow-y: auto;"  v-for="comment in comments" :key="comment">
                         <div class="flex block" style="padding-top: 10px; padding-left: 10px;">
                             <img src="/src/assets/toktik.png" style="height: 55px; width: 70px; padding-left: 10px; padding-right: 10px; padding-top: 5px;">
@@ -145,8 +144,8 @@
                 </v-infinite-scroll>
             </div>
 
-            <div v-else class="comment-list bg-white" style="height: 100vh; overflow-y: auto;">
-                <v-infinite-scroll overflow-auto :height="300" :items="items" :onLoad="load">
+            <div v-else class="comment-list bg-white" style="height: 72vh; overflow-y: auto;">
+                <v-infinite-scroll overflow-auto :height="200" :items="items">
                     <v-row>
                     <v-col
                         v-for="(content, index) in contents"
@@ -159,13 +158,19 @@
                     >
                         <v-card  @click="openVideoInRelateVideo(content.thumbnail, index)" style="width: 100%; max-width: 300px; height: 220px; background-color: black; display: flex; align-items: center; justify-content: center;">
                             <!-- <div class="justify-center flex items-center justify-center" > -->
-                                <v-img :src="'https://toktik-s3-videos.sgp1.digitaloceanspaces.com/' + content.thumbnail + '/thumbnail.png'" aspect-ratio="3/4" style="max-width: 100%; max-height: 100%;"></v-img>
+                                <v-img :src="'https://toktik-s3-videos.sgp1.digitaloceanspaces.com/' + content.thumbnail + 'thumbnail.png'" aspect-ratio="3/4" style="max-width: 100%; max-height: 100%;"></v-img>
 
                             <!-- </div> -->
                         
                         </v-card>
                     </v-col>
+
                     </v-row>
+                    <div class="flex items-center justify-center" style="padding: 20px;">
+                            <v-btn v-if="dialog == true" @click="get_videos">
+                            LOAD MORE CONTENT
+                            </v-btn>
+                        </div>
                 </v-infinite-scroll>
                 </div>
 
@@ -177,19 +182,19 @@
     <Navbar v-if="dialog == false"/>
     <Sidebar v-if="dialog == false"/>
 
-    <v-btn v-if="dialog == false" @click="get_video_name">
-        Test
-    </v-btn>
+
 
     <v-btn v-if="dialog == false"  @click="scrollToMyIndex">Test Scroll </v-btn>
-    <!-- <v-btn v-if="dialog == false" @click="openDialog">
-        openDialog
-    </v-btn> -->
+
 
 
     <div v-if="dialog == false" class="comment-list" style="height: 100vh; overflow-y: auto;">
         <div v-if="scrollToMyIndex"></div>
-        <v-infinite-scroll overflow-auto :height="300" :items="items" :onLoad="load">
+        <v-infinite-scroll
+            overflow-auto
+            :height="300"
+            :items="items"
+            >
             <div style="overflow-y: auto;"  v-for="(content , index) in contents" :key="index">
 
 
@@ -205,7 +210,7 @@
                         </div>
 
                         <div class="justify-center flex items-center justify-center" @click="openDialog(index, content.thumbnail)">
-                        <img v-bind:src="'https://toktik-s3-videos.sgp1.digitaloceanspaces.com/' + content.thumbnail + '/thumbnail.png'" class="w-1/2 place-content-center h-128">
+                        <img v-bind:src="'https://toktik-s3-videos.sgp1.digitaloceanspaces.com/' + content.thumbnail + 'thumbnail.png'" class="w-1/2 place-content-center h-128">
                         </div>
                         <div class="px-6 pt-4 pb-2">
                             <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#photography</span>
@@ -217,6 +222,12 @@
 
                 
             </div>
+            <div class="flex items-center justify-center" style="padding-bottom: 20px;">
+                <v-btn v-if="dialog == false" @click="get_videos">
+                LOAD MORE CONTENT
+                </v-btn>
+            </div>
+            
         </v-infinite-scroll>
     </div>
 </template>
@@ -229,15 +240,31 @@ import Sidebar from '@/components/Sidebar';
 export default {
     components: {Navbar, Sidebar,},
     methods: {
-        async get_video_name() {
-            const response = await axios.get("/get-video-file")
-            const content = {title: '',
-                subtitle: "",
-                thumbnail: ""}
-            console.log(response)
-            content.thumbnail = response.data.filename
+
+        async get_videos() {
+            await axios.post("/get_random_video").then(res => {
+                for (let each in res.data) {
+                const content = {title: res.data[each],
+                subtitle: res.data[each],
+                thumbnail: res.data[each]}
+                
+                this.contents.push(content)
+                   
+                
+                // this.contents.push(res)
+                // console.log(res)
+                }
+            })
             
-            this.contents.push(content)
+            // const content = {title: response.data,
+            //     subtitle: "",
+            //     thumbnail: ""}
+            // console.log(response)
+            
+
+            // content.thumbnail = response.data.filename
+            
+            // this.contents.push(content)
         },
         trigger_comment() {
             this.comment_buttons = true
@@ -334,16 +361,16 @@ export default {
         disableButtonUp: false,
         disableButtonDown: false,
         contents: [
-            {
+            // {
             //     title: '',
             //     subtitle: "",
-                thumbnail: "../src/assets/input.mp4",
-            },            
+                // thumbnail: "../src/assets/input.mp4",
+            // },            
         ],
 
         username: "Michael Gough",
         time: "Feb. 8, 2022",
-        message: "You are so cool.",
+        message: "This is super coolas doask;djs;ka kq;lwj dqwkdpoajkck;asjdk;ajsdkjaskldjaklsdjsaldksajkldasjdklasjdalksjdskdjaksldjasdjaksllk;dhf wabkufhbew;fblsadasdasdass ad;ljbjhfk asdh;fudasjfl;kasdfj ialsdfjfklasdfk;sdjflaskd;fasdklfklasdjfksjf;kasjfsjadfjsadfjsdlkfjakdsl",
         comment_buttons: true,
         itemMenus: [
             {
@@ -367,5 +394,8 @@ export default {
             },
         ],
     }),
+    beforeMount() {
+        this.get_videos()
+    }
 }
 </script>

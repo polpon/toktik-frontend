@@ -60,7 +60,7 @@
 
     <v-divider class="border-opacity-50"></v-divider>
     <div class="comment-list" style="height: 100vh; overflow-y: auto;">
-            <v-infinite-scroll overflow-auto :height="300" :items="items" :onLoad="load">
+            <v-infinite-scroll overflow-auto :height="300" :items="items">
 
                 
                 <div style="overflow-y: auto;"  v-for="video in videos" :key="video">

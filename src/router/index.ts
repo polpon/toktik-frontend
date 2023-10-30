@@ -37,12 +37,6 @@ const router = createRouter({
       meta: { requiresAuth: true }
     },
     {
-      path: '/video',
-      name: 'video',
-      component: () => import('@/views/SingleVideoViewPage.vue'),
-      meta: { requiresAuth: true }
-    },
-    {
       path: '/profile',
       name: 'profile',
       component: () => import('@/views/Profile.vue'),
