@@ -9,13 +9,21 @@
                 </div>
 
                 <div class="col-start-2 col-span-4 row-start-1 row-span-14">
-                    <video-player
-                        :src="'http://localhost:8000/api/m3u8/static/'+ this.currentVideo +'master.m3u8'"
-                        :poster="'https://toktik-s3-videos.sgp1.cdn.digitaloceanspaces.com/'+ this.currentVideo +'thumbnail.png'"
+                    <!-- <VideoPlayer
+                        :link="'http://localhost:8000/api/m3u8/static/'+ this.currentVideo +'master.m3u8'"
+                        :previewImageLink="'https://toktik-s3-videos.sgp1.cdn.digitaloceanspaces.com/'+ this.currentVideo +'thumbnail.png'"
                         controls
-                        :loop="true"
-                        rossorigin="use-credentials"
                         :volume="0.6"
+                        style=" width: 100%;
+                        height: 100%;"
+                    /> -->
+                    <VideoPlayer
+                        type="default"
+                        @pause="processPause"
+                        previewImageLink="poster.webp"
+                        :link="'http://localhost:8000/api/m3u8/static/'+ this.currentVideo +'master.m3u8'"
+                        :isMuted="false"
+                        :isControls="true"
                         style=" width: 100%;
                         height: 100%;"
                     />
@@ -31,13 +39,13 @@
                         <v-icon icon="mdi-arrow-down-bold-circle" size=300%></v-icon>
                     </v-btn>
                 </div>
-                
 
-            
+
+
             </div>
-            
+
         <v-card style="width: 30%;
-                height: 100%;">          
+                height: 100%;">
                 <article class="p-6 text-base bg-white" style="max-height: 25vh;  overflow: auto;">
                     <footer class="flex justify-between items-center mb-2">
                         <div class="flex items-center">
@@ -74,7 +82,7 @@
                                 dark:bg-gray-800
                                 dark:hover:bg-gray-700
                                 dark:focus:ring-gray-600"
-                            type="button"> 
+                            type="button">
                             <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 3">
                                 <path d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z"/>
                             </svg>
@@ -102,7 +110,7 @@
                     <p>
                         {{ this.message }}
                     </p>
-                </article>            
+                </article>
                 <!-- <v-divider class="border-opacity-0"></v-divider> -->
 
             <div class="bg-white" style="height: 40px">
@@ -122,7 +130,7 @@
 
             <v-divider class="border-opacity-75"></v-divider>
 
-            
+
 
                 <!-- TODO add if-else stagement -->
                 <!-- <div>
@@ -161,7 +169,7 @@
                                 <v-img :src="'https://toktik-s3-videos.sgp1.digitaloceanspaces.com/' + content.thumbnail + 'thumbnail.png'" aspect-ratio="3/4" style="max-width: 100%; max-height: 100%;"></v-img>
 
                             <!-- </div> -->
-                        
+
                         </v-card>
                     </v-col>
 
@@ -219,14 +227,14 @@
                     </div>
                 </div>
 
-                
+
             </div>
             <div class="flex items-center justify-center" style="padding-bottom: 20px;">
                 <v-btn v-if="dialog == false" @click="get_videos">
                 LOAD MORE CONTENT
                 </v-btn>
             </div>
-            
+
         </v-infinite-scroll>
     </div>
 </template>
@@ -235,9 +243,10 @@
 import axios from 'axios';
 import Navbar from "@/components/Navbar";
 import Sidebar from '@/components/Sidebar';
+import { VideoPlayer } from 'vue-hls-video-player';
 
 export default {
-    components: {Navbar, Sidebar,},
+    components: {Navbar, Sidebar, VideoPlayer},
     methods: {
 
         async get_videos() {
@@ -246,23 +255,23 @@ export default {
                 const content = {title: res.data[each],
                 subtitle: res.data[each],
                 thumbnail: res.data[each]}
-                
+
                 this.contents.push(content)
-                   
-                
+
+
                 // this.contents.push(res)
                 // console.log(res)
                 }
             })
-            
+
             // const content = {title: response.data,
             //     subtitle: "",
             //     thumbnail: ""}
             // console.log(response)
-            
+
 
             // content.thumbnail = response.data.filename
-            
+
             // this.contents.push(content)
         },
         trigger_comment() {
@@ -300,7 +309,7 @@ export default {
             console.log("goDown")
             console.log(this.currentIndex)
             // handle the out of order video
-            
+
 
             if (this.currentIndex < this.contents.length - 1) {
                 this.currentIndex = this.currentIndex + 1
@@ -314,7 +323,7 @@ export default {
         goUp() {
             console.log("goUp")
             console.log(this.currentIndex)
-            
+
             if (this.currentIndex > 0) {
                 this.currentIndex = this.currentIndex - 1
                 this.currentVideo = this.contents[this.currentIndex].thumbnail
@@ -364,7 +373,7 @@ export default {
             //     title: '',
             //     subtitle: "",
                 // thumbnail: "../src/assets/input.mp4",
-            // },            
+            // },
         ],
 
         username: "Michael Gough",

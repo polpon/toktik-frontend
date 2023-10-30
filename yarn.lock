@@ -453,7 +453,7 @@
     "@vue/compiler-dom" "3.3.4"
     "@vue/shared" "3.3.4"
 
-"@vue/devtools-api@^6.5.0":
+"@vue/devtools-api@^6.0.0-beta.11", "@vue/devtools-api@^6.5.0":
   "integrity" "sha512-+KpckaAQyfbvshdDW5xQylLni1asvNSGme1JFs8I1+/H5pHEhqUKMEQD/qn3Nx5+/nycBq11qAEi8lk+LXI2dA=="
   "resolved" "https://registry.npmjs.org/@vue/devtools-api/-/devtools-api-6.5.1.tgz"
   "version" "6.5.1"
@@ -1474,6 +1474,11 @@
   "integrity" "sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw=="
   "resolved" "https://registry.npmjs.org/he/-/he-1.2.0.tgz"
   "version" "1.2.0"
+
+"hls.js@^1.4.3":
+  "integrity" "sha512-1RBpx2VihibzE3WE9kGoVCtrhhDWTzydzElk/kyRbEOLnb1WIE+3ZabM/L8BqKFTCL3pUy4QzhXgD1Q6Igr1JA=="
+  "resolved" "https://registry.npmjs.org/hls.js/-/hls.js-1.4.12.tgz"
+  "version" "1.4.12"
 
 "hosted-git-info@^2.1.4":
   "integrity" "sha512-mxIDAb9Lsm6DoOJ7xH+5+X4y1LU/4Hi50L9C5sIswK3JzULS4bwk1FvjdBgvYR4bzT4tuUQiC15FE2f5HbLvYw=="
@@ -2756,7 +2761,7 @@
     "spdx-correct" "^3.0.0"
     "spdx-expression-parse" "^3.0.0"
 
-"video.js@^6 || ^7", "video.js@^7.6.0", "video.js@7.x":
+"video.js@^6 || ^7", "video.js@7.x":
   "integrity" "sha512-WRq86tXZKrThA9mK+IR+v4tIQVVvnb5LhvL71fD2AX7TxVOPdaeK1X/wyuUruBqWaOG3w2sZXoMY6HF2Jlo9qA=="
   "resolved" "https://registry.npmjs.org/video.js/-/video.js-7.21.5.tgz"
   "version" "7.21.5"
@@ -2835,6 +2840,13 @@
     "lodash" "^4.17.21"
     "semver" "^7.3.6"
 
+"vue-hls-video-player@^1.0.1":
+  "integrity" "sha512-zG+L71Jidc1zqc6+8OdM8SaRIhdTaIKcM0QFEdTX7gHWIzUKBzgACeHE4fjPy5rUvGL6A3JzVfUEeZVw5DpbDA=="
+  "resolved" "https://registry.npmjs.org/vue-hls-video-player/-/vue-hls-video-player-1.0.1.tgz"
+  "version" "1.0.1"
+  dependencies:
+    "hls.js" "^1.4.3"
+
 "vue-loading-overlay@^6.0.3":
   "integrity" "sha512-Ab0hqnVKasVS2mNUo8Wkm95mSbk5fXp/karZmMou5yP0hTUOox/kZuBLNwgzJ4kFP829wFJl7O7FN1Dr0kRaVQ=="
   "resolved" "https://registry.npmjs.org/vue-loading-overlay/-/vue-loading-overlay-6.0.3.tgz"
@@ -2864,7 +2876,7 @@
     "@vue/typescript" "1.8.19"
     "semver" "^7.5.4"
 
-"vue@^3.0.0", "vue@^3.0.0 || ^2.0.0", "vue@^3.2.0", "vue@^3.2.25", "vue@3.3.4", "vue@3.x":
+"vue@^3.0.0", "vue@^3.0.0 || ^2.0.0", "vue@^3.0.2", "vue@^3.2.0", "vue@^3.2.25", "vue@3.3.4", "vue@3.x":
   "integrity" "sha512-VTyEYn3yvIeY1Py0WaYGZsXnz3y5UnGi62GjVEqvEGPl6nxbOrCXbVOTQWBEJUqAyTUk2uJ5JLVnYJ6ZzGbrSw=="
   "resolved" "https://registry.npmjs.org/vue/-/vue-3.3.4.tgz"
   "version" "3.3.4"
@@ -2884,6 +2896,13 @@
   "integrity" "sha512-CVC6MDC45H+IY8Nq5QO/lBhbSd/dg+IV46GKd+LIndriLoQXG+tFv31NQY++tOQgrKeZr6w2SUBMBxSZyHErfg=="
   "resolved" "https://registry.npmjs.org/vuetify/-/vuetify-3.3.21.tgz"
   "version" "3.3.21"
+
+"vuex@^4.0.2":
+  "integrity" "sha512-M6r8uxELjZIK8kTKDGgZTYX/ahzblnzC4isU1tpmEuOIIKmV+TRdc+H4s8ds2NuZ7wpUTdGRzJRtoj+lI+pc0Q=="
+  "resolved" "https://registry.npmjs.org/vuex/-/vuex-4.0.2.tgz"
+  "version" "4.0.2"
+  dependencies:
+    "@vue/devtools-api" "^6.0.0-beta.11"
 
 "webpack-sources@^3.2.3":
   "integrity" "sha512-/DyMEOrDgLKKIG0fmvtz+4dUX/3Ghozwgm6iPp8KRhvn+eQf9+Q7GWxVNMk3+uCPWfdXYC4ExGBckIXdFEfH1w=="

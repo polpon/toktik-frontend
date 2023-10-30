@@ -49,6 +49,25 @@ axios.interceptors.response.use(function (response) {
   });
 
 
+const originalXHROpen = XMLHttpRequest.prototype.open;
+
+XMLHttpRequest.prototype.open = function (
+  method: string,
+  url: string,
+) {
+  // Add your logic here to capture or intercept the XHR requests.
+
+  if (url.includes("http://localhost:8000/api/m3u8/")) {
+    console.log('XHR request intercepted. Method:', method, 'URL:', url);
+    // If it matches, read the `access_token` from cookies and add it to the request headers
+    // Ensure that credentials are sent with the XHR request
+    this.withCredentials = true;
+  }
+  return originalXHROpen.apply(this, arguments);
+};
+
+
+
 // Instantiate the interceptor
 createAuthRefreshInterceptor(
     axios,
