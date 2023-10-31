@@ -54,8 +54,7 @@ const originalXHROpen = XMLHttpRequest.prototype.open;
 
 XMLHttpRequest.prototype.open = function (
   method: string,
-  url: string,
-  ...arg: any
+  url: string
 ) {
   // Add your logic here to capture or intercept the XHR requests.
 
@@ -65,7 +64,8 @@ XMLHttpRequest.prototype.open = function (
     // Ensure that credentials are sent with the XHR request
     this.withCredentials = true;
   }
-  return originalXHROpen.apply(this, arg);
+  // @ts-ignore
+  return originalXHROpen.apply(this, arguments);
 };
 
 
