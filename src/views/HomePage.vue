@@ -1,3 +1,42 @@
+<script setup>
+import { ref, getCurrentInstance } from "vue";
+import axios from 'axios';
+import InfiniteLoading from "v3-infinite-loading";
+import "v3-infinite-loading/lib/style.css";
+
+const contents = ref([]);
+const load = async $state => {
+    console.log("loading...");
+
+    await axios.post("/get_random_video").then(res => {
+        console.log(res);
+        for (let each in res.data) {
+            const content = {
+                title: res.data[each],
+                subtitle: res.data[each],
+                thumbnail: res.data[each],
+                videoOptions: {
+                    // autoplay: true,
+                    controls: true,
+                    responsive: true,
+                    fluid: true,
+                    fill: true,
+                    preload: 'auto',
+                    poster: `/api/static/${res.data[each]}thumbnail.png`,
+                    sources: [
+                    {
+                        src: `/api/m3u8/static/${res.data[each]}master.m3u8`,
+                        type: 'application/vnd.apple.mpegurl'
+                    }
+                    ]
+                }
+            }
+        contents.value.push(content)
+        }
+    })
+};
+</script>
+
 <template>
     <div v-if="dialog" >
         <div class="flex flex-row h-screen hover:flex-row">
@@ -8,34 +47,27 @@
                     </v-btn>
                 </div>
 
-                <div class="col-start-2 col-span-4 row-start-1 row-span-14">
+                <div class="col-start-2 col-span-4 row-start-1 row-span-14 video-js-responsive-container" style="height: 100vh; padding-top: 250px">
                     <!-- <VideoPlayer
-                        :link="'http://localhost:8000/api/m3u8/static/'+ this.currentVideo +'master.m3u8'"
-                        :previewImageLink="'https://toktik-s3-videos.sgp1.cdn.digitaloceanspaces.com/'+ this.currentVideo +'thumbnail.png'"
-                        controls
-                        :volume="0.6"
-                        style=" width: 100%;
-                        height: 100%;"
-                    /> -->
-                    <VideoPlayer
                         type="default"
                         @pause="processPause"
-                        :previewImageLink="'/api/static/'+ this.currentVideo +'thumbnail.png'"
-                        :link="'/api/m3u8/static/'+ this.currentVideo +'master.m3u8'"
+                        :previewImageLink="'/api/static/'+ this.currentVideo.thumbnail +'thumbnail.png'"
+                        :link="'/api/m3u8/static/'+ this.currentVideo.thumbnail +'master.m3u8'"
                         :isMuted="false"
                         :isControls="true"
                         style=" width: 100%;
                         height: 100%;"
-                    />
+                    /> -->
+                    <video-player :options="this.currentVideo.videoOptions" class="video-js" :key="this.currentVideo.thumbnail"/>
                 </div>
 
                 <div v-if="disableButtonUp == false" class="row-start-7 col-start-6  place-self-center" style="height: 100% width: 50%;">
-                    <v-btn @click="goUp" variant="text" icon style="height: 100% width: 50%;">
+                    <v-btn @click="goUp(contents)" variant="text" icon style="height: 100% width: 50%;">
                         <v-icon icon="mdi-arrow-up-bold-circle" size=300%></v-icon>
                     </v-btn>
                 </div>
                 <div v-if="disableButtonDown  == false" class="row-start-8 col-start-6 place-self-center" style="height: 100% width: 50%;">
-                    <v-btn @click="goDown" variant="text" icon style="height: 100% width: 50%;">
+                    <v-btn @click="goDown(contents)" variant="text" icon style="height: 100% width: 50%;">
                         <v-icon icon="mdi-arrow-down-bold-circle" size=300%></v-icon>
                     </v-btn>
                 </div>
@@ -139,7 +171,7 @@
 
 
             <div v-if="this.comment_buttons" class="comment-list bg-white" style="height: 100vh; overflow-y: auto;">
-                <v-infinite-scroll overflow-auto :height="300" :items="items" :onLoad="get_videos">
+                <!-- <v-infinite-scroll overflow-auto :height="300" :items="items" :onLoad="get_videos">
                     <div style="overflow-y: auto;"  v-for="comment in comments" :key="comment">
                         <div class="flex block" style="padding-top: 10px; padding-left: 10px;">
                             <img src="/src/assets/toktik.png" style="height: 55px; width: 70px; padding-left: 10px; padding-right: 10px; padding-top: 5px;">
@@ -149,7 +181,7 @@
                             </div>
                         </div>
                     </div>
-                </v-infinite-scroll>
+                </v-infinite-scroll> -->
             </div>
 
             <div v-else class="comment-list bg-white" style="height: 72vh; overflow-y: auto;">
@@ -174,11 +206,11 @@
                     </v-col>
 
                     </v-row>
-                    <div class="flex items-center justify-center" style="padding: 20px;">
+                    <!-- <div class="flex items-center justify-center" style="padding: 20px;">
                             <v-btn v-if="dialog == true" @click="get_videos">
                             LOAD MORE CONTENT
                             </v-btn>
-                        </div>
+                        </div> -->
                 </v-infinite-scroll>
                 </div>
 
@@ -197,147 +229,130 @@
 
     <div v-if="dialog == false" class="comment-list" style="height: 100vh; overflow-y: auto;">
         <div v-if="scrollToMyIndex"></div>
-        <v-infinite-scroll
-            overflow-auto
-            :height="300"
-            :items="items"
-            >
-            <div style="overflow-y: auto;"  v-for="(content , index) in contents" :key="index">
 
+        <div style="overflow-y: auto;"  v-for="(content , index) in contents" :key="index">
+            <div :ref="index" class="flex items-center justify-center" style="border-radius:2px;">
+                <div class="max-w-2xl rounded overflow-hidden justify-between p-4 leading-normal">
+                    <div class="px-6 py-4">
+                        <div class="font-bold text-xl mb-2">
+                            {{ content.title }}
+                        </div>
+                        <p class="text-slate-300 text-base">
+                            {{ content.subtitle }}
+                        </p>
+                    </div>
 
-                <div :ref="index" class="flex items-center justify-center" style="border-radius:2px;">
-                    <div class="max-w-2xl rounded overflow-hidden justify-between p-4 leading-normal">
-                        <div class="px-6 py-4">
-                            <div class="font-bold text-xl mb-2">
-                                {{ content.title }}
-                            </div>
-                            <p class="text-slate-300 text-base">
-                                {{ content.subtitle }}
-                            </p>
-                        </div>
-
-                        <div class="justify-center flex items-center justify-center" @click="openDialog(index, content.thumbnail)">
-                        <img v-bind:src="'https://toktik-s3-videos.sgp1.digitaloceanspaces.com/' + content.thumbnail + 'thumbnail.png'" class="w-1/2 place-content-center h-128">
-                        </div>
-                        <div class="px-6 pt-4 pb-2">
-                            <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#photography</span>
-                            <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#travel</span>
-                            <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#winter</span>
-                        </div>
+                    <div class="justify-center flex items-center justify-center" @click="openDialog(index, content, contents)">
+                    <!-- <video-player :options="content.videoOptions" class="video-js" :key=".thumbnail"/> -->
+                    <!-- <img v-bind:src="'https://toktik-s3-videos.sgp1.digitaloceanspaces.com/' + content.thumbnail + 'thumbnail.png'" class="w-1/2 place-content-center h-128"> -->
+                    </div>
+                    <div class="px-6 pt-4 pb-2">
+                        <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#photography</span>
+                        <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#travel</span>
+                        <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#winter</span>
                     </div>
                 </div>
-
-
             </div>
-            <div class="flex items-center justify-center" style="padding-bottom: 20px;">
-                <v-btn v-if="dialog == false" @click="get_videos">
-                LOAD MORE CONTENT
-                </v-btn>
-            </div>
-
-        </v-infinite-scroll>
+        </div>
+        <InfiniteLoading @infinite="load" />
     </div>
 </template>
 
 <script>
-import axios from 'axios';
+import { ref, getCurrentInstance } from 'vue';
 import Navbar from "@/components/Navbar";
 import Sidebar from '@/components/Sidebar';
+import VideoPlayer from '@/components/VideoPlayer.vue';
 
 export default {
     components: {Navbar, Sidebar, VideoPlayer},
     methods: {
+        // async get_videos() {
+        //     console.log("Getting videos...")
+        //     await axios.post("/get_random_video").then(res => {
+        //         for (let each in res.data) {
+        //         const content = {title: res.data[each],
+        //         subtitle: res.data[each],
+        //         thumbnail: res.data[each]}
 
-        async get_videos() {
-            await axios.post("/get_random_video").then(res => {
-                for (let each in res.data) {
-                const content = {title: res.data[each],
-                subtitle: res.data[each],
-                thumbnail: res.data[each]}
-
-                this.contents.push(content)
-
-
-                // this.contents.push(res)
-                // console.log(res)
-                }
-            })
-
-            // const content = {title: response.data,
-            //     subtitle: "",
-            //     thumbnail: ""}
-            // console.log(response)
+        //         this.contents.push(content)
 
 
-            // content.thumbnail = response.data.filename
-
-            // this.contents.push(content)
-        },
+        //         // this.contents.push(res)
+        //         // console.log(res)
+        //         }
+        //     })
+        // },
         trigger_comment() {
             this.comment_buttons = true
         },
         trigger_video() {
             this.comment_buttons = false
         },
-        openDialog(index, filename) {
-        console.log(this.contents.length)
+        openDialog(index, context, contents) {
+        // console.log(this.contents.length)
+        console.log(contents)
         this.dialog = true;
-        this.currentVideo = filename
+        this.currentVideo = context
         this.currentScrollVideo = index
         this.currentIndex = index
         // this.disableButtonDown = false
         // this.disableButtonUp = false
-        this.disableOnOffbuttons()
+        this.disableOnOffbuttons(contents)
                 // console.log(this.contents)
         // console.log(this.contents[0])
         },
-        disableOnOffbuttons() {
+        disableOnOffbuttons(contents) {
         if (this.currentIndex == 0) {
             this.disableButtonUp = true
         } else {
             this.disableButtonUp = false
         }
-        if (this.currentIndex == ((this.contents.length) - 1)) {
+        if (this.currentIndex == ((contents.length) - 1)) {
             this.disableButtonDown = true
         } else {
             this.disableButtonDown = false
         }
 
         },
-        goDown() {
+        goDown(contents) {
             console.log("goDown")
+            console.log(contents)
             console.log(this.currentIndex)
             // handle the out of order video
 
 
-            if (this.currentIndex < this.contents.length - 1) {
+            if (this.currentIndex < contents.length - 1) {
                 this.currentIndex = this.currentIndex + 1
-                this.currentVideo = this.contents[this.currentIndex].thumbnail
+                this.currentVideo = contents[this.currentIndex]
+                console.log(this.currentVideo)
                 // this.disableButtonUp = false
             } else {
                 // this.disableButtonDown = true
             }
-            this.disableOnOffbuttons()
+            this.disableOnOffbuttons(contents)
+
+            // VideoPlayer.value.bangers;
         },
-        goUp() {
+        goUp(contents) {
             console.log("goUp")
             console.log(this.currentIndex)
 
             if (this.currentIndex > 0) {
                 this.currentIndex = this.currentIndex - 1
-                this.currentVideo = this.contents[this.currentIndex].thumbnail
+                this.currentVideo = contents[this.currentIndex]
                 // this.disableButtonDown = false
             } else {
                 // this.disableButtonUp = true
             }
-            this.disableOnOffbuttons()
+            this.disableOnOffbuttons(contents)
         },
-        openVideoInRelateVideo(filename, index) {
+        openVideoInRelateVideo(filename, index, contents) {
             this.currentVideo = filename;
             this.dialog = true;
             this.currentIndex = index;
             console.log(this.currentIndex)
-            this.disableOnOffbuttons();
+            this.disableOnOffbuttons(contents);
 
             // this.dialog = true;
             // this.currentVideo = filename
@@ -367,13 +382,6 @@ export default {
         currentIndex: "",
         disableButtonUp: false,
         disableButtonDown: false,
-        contents: [
-            // {
-            //     title: '',
-            //     subtitle: "",
-                // thumbnail: "../src/assets/input.mp4",
-            // },
-        ],
 
         username: "Michael Gough",
         time: "Feb. 8, 2022",
@@ -400,9 +408,33 @@ export default {
                 time: "2 min"
             },
         ],
+        videoOptionsCheck: {
+        autoplay: true,
+        controls: true,
+        responsive: true,
+        fluid: true,
+        preload: 'auto',
+        poster: "/api/static/a98c6b2e-f574-44f6-b492-7e77311ae757/thumbnail.png",
+        sources: [
+          {
+            src:
+              '/api/m3u8/static/a98c6b2e-f574-44f6-b492-7e77311ae757/master.m3u8',
+              type: 'application/vnd.apple.mpegurl'
+          }
+        ]
+      }
     }),
-    beforeMount() {
-        this.get_videos()
-    }
 }
 </script>
+
+<style>
+.video-js-responsive-container {
+    width: 100%;
+    position: relative;
+    background-color: black;
+}
+.video-js {
+    height: 100%;
+    width: 100%;
+}
+</style>

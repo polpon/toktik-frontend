@@ -1,6 +1,6 @@
 <template>
   <div>
-    <video-player :options="videoOptions" />
+    <video-player :options="videoOptions"/>
   </div>
 </template>
 
@@ -19,8 +19,11 @@ export default {
       videoOptions: {
         autoplay: true,
         controls: true,
+        responsive: true,
+        fluid: true,
+        fill: true,
         preload: 'auto',
-        poster: '/api/static/a98c6b2e-f574-44f6-b492-7e77311ae757/thumbnail.png',
+        poster: "/api/static/a98c6b2e-f574-44f6-b492-7e77311ae757/thumbnail.png",
         sources: [
           {
             src:

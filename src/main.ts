@@ -13,6 +13,12 @@ import {LoadingPlugin} from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/css/index.css';
 import VueSmoothScroll from 'vue3-smooth-scroll'
 
+// Vuetify
+import 'vuetify/styles'
+import { createVuetify } from 'vuetify'
+import * as components from 'vuetify/components'
+import * as directives from 'vuetify/directives'
+
 // Plugins
 import { registerPlugins } from '@/plugins'
 
@@ -20,8 +26,10 @@ import axios from 'axios';
 import createAuthRefreshInterceptor from 'axios-auth-refresh';
 import router from './router';
 import store from './store';
-import VueVideoPlayer from '@videojs-player/vue'
-import 'video.js/dist/video-js.css'
+import VueVideoPlayer from '@videojs-player/vue';
+import 'video.js/dist/video-js.css';
+import InfiniteLoading from "v3-infinite-loading";
+import "v3-infinite-loading/lib/style.css";
 
 axios.defaults.baseURL = '/api';
 
@@ -72,17 +80,25 @@ XMLHttpRequest.prototype.open = function (
 
 // Instantiate the interceptor
 createAuthRefreshInterceptor(
-    axios,
-    refreshAuthLogic
-    );
+  axios,
+  refreshAuthLogic
+  );
+
+
+const vuetify = createVuetify({
+  components,
+  directives,
+})
 
 
 const app = createApp(App)
 
+app.use(vuetify)
 app.use(VueVideoPlayer)
 app.use(LoadingPlugin)
 app.use(VueSmoothScroll)
 app.use(store)
+app.component("infinite-loading", InfiniteLoading);
 registerPlugins(app)
 
 app.mount('#app')

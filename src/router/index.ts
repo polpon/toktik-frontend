@@ -24,6 +24,11 @@ const router = createRouter({
       component: () => import('@/views/Test.vue')
     },
     {
+      path: '/test2',
+      name: 'test2',
+      component: () => import('@/views/Test2.vue')
+    },
+    {
       path: '/signup',
       name: 'signup',
       component: () => import('@/views/SignUp.vue'),
@@ -81,7 +86,7 @@ router.beforeEach(async (to, from, next) => {
       // User is not authenticated, redirect to login
       store.commit('logout')
       next('/login');
-      
+
     }
   }
   else if (to.meta.checkAuth)
@@ -92,7 +97,7 @@ router.beforeEach(async (to, from, next) => {
 
     } else {
       store.commit('logout')
-      next() 
+      next()
 
     }
   }

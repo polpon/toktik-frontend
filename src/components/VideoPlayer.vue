@@ -17,6 +17,19 @@ props: {
     }
     }
 },
+expose: ['play', 'pause'],
+methods: {
+    play() {
+        if (this.player) {
+        this.player.play();
+        }
+    },
+    pause() {
+        if (this.player) {
+        this.player.pause();
+        }
+    }
+},
 data() {
     return {
     player: null
