@@ -9,8 +9,6 @@ import App from './App.vue'
 
 // Composables
 import { createApp } from 'vue'
-import VueVideoPlayer from '@videojs-player/vue'
-import 'video.js/dist/video-js.css'
 import {LoadingPlugin} from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/css/index.css';
 import VueSmoothScroll from 'vue3-smooth-scroll'
@@ -22,6 +20,8 @@ import axios from 'axios';
 import createAuthRefreshInterceptor from 'axios-auth-refresh';
 import router from './router';
 import store from './store';
+import VueVideoPlayer from '@videojs-player/vue'
+import 'video.js/dist/video-js.css'
 
 axios.defaults.baseURL = '/api';
 
@@ -78,8 +78,9 @@ createAuthRefreshInterceptor(
 
 
 const app = createApp(App)
-app.use(LoadingPlugin);
-app.use(VueVideoPlayer);
+
+app.use(VueVideoPlayer)
+app.use(LoadingPlugin)
 app.use(VueSmoothScroll)
 app.use(store)
 registerPlugins(app)
