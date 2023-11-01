@@ -15,8 +15,10 @@ const load = async $state => {
                 title: res.data[each],
                 subtitle: res.data[each],
                 thumbnail: res.data[each],
+                startAt: 0,
                 videoOptions: {
                     // autoplay: true,
+                    // muted: true,
                     controls: true,
                     responsive: true,
                     fluid: true,
@@ -48,17 +50,7 @@ const load = async $state => {
                 </div>
 
                 <div class="col-start-2 col-span-4 row-start-1 row-span-14 video-js-responsive-container" style="height: 100vh; padding-top: 250px">
-                    <!-- <VideoPlayer
-                        type="default"
-                        @pause="processPause"
-                        :previewImageLink="'/api/static/'+ this.currentVideo.thumbnail +'thumbnail.png'"
-                        :link="'/api/m3u8/static/'+ this.currentVideo.thumbnail +'master.m3u8'"
-                        :isMuted="false"
-                        :isControls="true"
-                        style=" width: 100%;
-                        height: 100%;"
-                    /> -->
-                    <video-player :options="this.currentVideo.videoOptions" class="video-js" :key="this.currentVideo.thumbnail"/>
+                    <video-player :options="this.currentVideo.videoOptions" class="video-js" :key="this.currentVideo.thumbnail" :autoplay="true" :currenttime="this.currentVideo.startAt"/>
                 </div>
 
                 <div v-if="disableButtonUp == false" class="row-start-7 col-start-6  place-self-center" style="height: 100% width: 50%;">
@@ -197,20 +189,11 @@ const load = async $state => {
                         style="padding: 10px;"
                     >
                         <v-card  @click="openVideoInRelateVideo(content.thumbnail, index)" style="width: 100%; max-width: 300px; height: 220px; background-color: black; display: flex; align-items: center; justify-content: center;">
-                            <!-- <div class="justify-center flex items-center justify-center" > -->
-                                <v-img :src="'https://toktik-s3-videos.sgp1.digitaloceanspaces.com/' + content.thumbnail + 'thumbnail.png'" aspect-ratio="3/4" style="max-width: 100%; max-height: 100%;"></v-img>
-
-                            <!-- </div> -->
-
+                            <v-img :src="'https://toktik-s3-videos.sgp1.digitaloceanspaces.com/' + content.thumbnail + 'thumbnail.png'" aspect-ratio="3/4" style="max-width: 100%; max-height: 100%;"></v-img>
                         </v-card>
                     </v-col>
 
                     </v-row>
-                    <!-- <div class="flex items-center justify-center" style="padding: 20px;">
-                            <v-btn v-if="dialog == true" @click="get_videos">
-                            LOAD MORE CONTENT
-                            </v-btn>
-                        </div> -->
                 </v-infinite-scroll>
                 </div>
 
@@ -242,9 +225,11 @@ const load = async $state => {
                         </p>
                     </div>
 
-                    <div class="justify-center flex items-center justify-center" @click="openDialog(index, content, contents)">
-                    <!-- <video-player :options="content.videoOptions" class="video-js" :key=".thumbnail"/> -->
-                    <!-- <img v-bind:src="'https://toktik-s3-videos.sgp1.digitaloceanspaces.com/' + content.thumbnail + 'thumbnail.png'" class="w-1/2 place-content-center h-128"> -->
+                    <div class="justify-center flex items-center justify-center" @click="handleClick(index, content, contents)">
+                        <div class="col-start-2 col-span-4 row-start-1 row-span-14 video-js-responsive-container" style="height: 100vh; position: relative;">
+                            <video-player ref="videoPlayer" :options="content.videoOptions" class="video-js" :key="content.thumbnail" v-observe-visibility="(isVisible, entry) => visibilityChanged(isVisible, entry, this.$refs.videoPlayer[index])"/>
+                        </div>
+                    <!-- <img v-bind:src="'https://toktik-s3-videos.sgp1.digitaloceanspaces.com/' + content.thumbnail + 'thumbnail.png'" class="w-1/2 place-content-center h-128"> this.$refs.videoPlayer[index].play() -->
                     </div>
                     <div class="px-6 pt-4 pb-2">
                         <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#photography</span>
@@ -267,6 +252,17 @@ import VideoPlayer from '@/components/VideoPlayer.vue';
 export default {
     components: {Navbar, Sidebar, VideoPlayer},
     methods: {
+        visibilityChanged (isVisible, entry, context) {
+            // this.isVisible = isVisible
+            console.log(isVisible)
+            isVisible ? context.play() : context.pause();
+        },
+        handleClick(index, content, contents) {
+            const player = this.$refs.videoPlayer[index].getPlayer();
+            console.log(player.currentTime());
+
+            this.openDialog(index, content, contents, player.currentTime());
+        },
         // async get_videos() {
         //     console.log("Getting videos...")
         //     await axios.post("/get_random_video").then(res => {
@@ -289,8 +285,9 @@ export default {
         trigger_video() {
             this.comment_buttons = false
         },
-        openDialog(index, context, contents) {
+        openDialog(index, context, contents, curTime = 0) {
         // console.log(this.contents.length)
+        context.startAt = curTime;
         console.log(contents)
         this.dialog = true;
         this.currentVideo = context
@@ -436,5 +433,9 @@ export default {
 .video-js {
     height: 100%;
     width: 100%;
+
+    top: 50%;
+    transform: translateY(-50%);
+    position: absolute;
 }
 </style>

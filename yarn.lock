@@ -3573,6 +3573,11 @@
   "resolved" "https://registry.npmjs.org/vue-loading-overlay/-/vue-loading-overlay-6.0.3.tgz"
   "version" "6.0.3"
 
+"vue-observe-visibility@^2.0.0-alpha.1":
+  "integrity" "sha512-flFbp/gs9pZniXR6fans8smv1kDScJ8RS7rEpMjhVabiKeq7Qz3D9+eGsypncjfIyyU84saU88XZ0zjbD6Gq/g=="
+  "resolved" "https://registry.npmjs.org/vue-observe-visibility/-/vue-observe-visibility-2.0.0-alpha.1.tgz"
+  "version" "2.0.0-alpha.1"
+
 "vue-router@^4.0.0":
   "integrity" "sha512-DIUpKcyg4+PTQKfFPX88UWhlagBEBEfJ5A8XDXRJLUnZOvcpMF8o/dnL90vpVkGaPbjvXazV/rC1qBKrZlFugw=="
   "resolved" "https://registry.npmjs.org/vue-router/-/vue-router-4.2.5.tgz"

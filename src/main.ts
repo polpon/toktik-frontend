@@ -30,6 +30,7 @@ import VueVideoPlayer from '@videojs-player/vue';
 import 'video.js/dist/video-js.css';
 import InfiniteLoading from "v3-infinite-loading";
 import "v3-infinite-loading/lib/style.css";
+import VueObserveVisibility from 'vue-observe-visibility'
 
 axios.defaults.baseURL = '/api';
 
@@ -98,6 +99,7 @@ app.use(VueVideoPlayer)
 app.use(LoadingPlugin)
 app.use(VueSmoothScroll)
 app.use(store)
+app.use(VueObserveVisibility)
 app.component("infinite-loading", InfiniteLoading);
 registerPlugins(app)
 
