@@ -243,7 +243,6 @@
 import axios from 'axios';
 import Navbar from "@/components/Navbar";
 import Sidebar from '@/components/Sidebar';
-import { VideoPlayer } from 'vue-hls-video-player';
 
 export default {
     components: {Navbar, Sidebar, VideoPlayer},
