@@ -65,14 +65,15 @@
                 <div style="overflow-y: auto;"  v-for="video in videos" :key="video">
 
                     <div class="flex block" style="padding-top: 10px; padding-left: 10px;">
-                        <img v-bind:src="'https://toktik-s3-videos.sgp1.digitaloceanspaces.com/' + video.thumbnail + '/thumbnail.png'"
+                        <img v-bind:src="'api/static/' + video.uuid + '/thumbnail.png'"
 
                         class="place-self-center"
                         style="height: 20%; width: 20%; padding-left: 10px; padding-right: 10px; padding-top: 5px;"
                         >
-                        <!-- <div class="place-self-center" style="font-size: 2.2vh;">
-                            {{ video.name }}
-                        </div>      -->
+                        <v-spacer></v-spacer>
+                        <div class="place-self-center" style="font-size: 2.2vh;">
+                            {{ video.title }}
+                        </div>
                         <v-spacer></v-spacer>
                         <div class="place-self-center" style="font-size: 2.2vh;">
                             <p class="break-all" style="padding-right: 55px;">Status: {{ video.status }}</p>
@@ -80,7 +81,7 @@
                         <v-spacer></v-spacer>
                         <div class="place-self-center"  style="padding-right: 10px;">
 
-                            <v-btn >
+                            <v-btn @click="delete_video(video.uuid)">
                                 Delete
                             </v-btn>
                         </div>
@@ -90,9 +91,6 @@
                 </div>
             </v-infinite-scroll>
         </div>
-
-
-
 
 </template>
 
@@ -114,10 +112,32 @@ export default {
             },
         ],
     }),
-    beforeMount() {
-      this.username = this.$store.state.username
-      this.videos = this.$store.state.videos
+    methods: {
+        async delete_video(filename) {
+            let data = new FormData();
 
+            console.log(filename)
+
+            data.append("filename", filename)
+
+            await axios.post('/delete_video', {"filename": filename}).then(async (res) => {
+                console.log("delete successful");
+                await axios.get('/get_user_videos').then((res) => {
+                    this.videos = res.data;
+                    }).catch((err) => {
+                    })
+            }).catch((err) => {
+                console.log("its joever")
+            })
+        }
+    },
+    async beforeMount() {
+      this.username = this.$store.state.username
+
+      await axios.get('/get_user_videos').then((res) => {
+        this.videos = res.data;
+        }).catch((err) => {
+        })
     }
 }
 
