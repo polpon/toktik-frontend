@@ -3,6 +3,7 @@ import { ref } from "vue";
 import axios from 'axios';
 import InfiniteLoading from "v3-infinite-loading";
 import "v3-infinite-loading/lib/style.css";
+import store from '../store';
 
 const contents = ref([]);
 const load = async $state => {
@@ -12,9 +13,9 @@ const load = async $state => {
         console.log(res);
         for (let each in res.data) {
             const content = {
-                title: res.data[each],
-                subtitle: res.data[each],
-                thumbnail: res.data[each],
+                title: res.data[each].title,
+                subtitle: res.data[each].description,
+                thumbnail: res.data[each].uuid,
                 startAt: 0,
                 videoOptions: {
                     // autoplay: true,
@@ -24,10 +25,10 @@ const load = async $state => {
                     fluid: true,
                     fill: true,
                     preload: 'auto',
-                    poster: `/api/static/${res.data[each]}thumbnail.png`,
+                    poster: `/api/static/${res.data[each].uuid}/thumbnail.png`,
                     sources: [
                     {
-                        src: `/api/m3u8/static/${res.data[each]}master.m3u8`,
+                        src: `/api/m3u8/static/${res.data[each].uuid}/master.m3u8`,
                         type: 'application/vnd.apple.mpegurl'
                     }
                     ]

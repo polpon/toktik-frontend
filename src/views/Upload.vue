@@ -1,5 +1,4 @@
 <template>
-    <Navbar/>
     <Sidebar/>
 
     <div class="d-flex align-center justify-center" style="height: 100vh">
@@ -8,28 +7,28 @@
             <v-form fast-fail @submit.prevent="submitFrom">
                 <v-text-field
                 width=""
-                clearable 
+                clearable
                 v-model="title"
                 label="title"
                 :rules="titleRule"
                 >
                 </v-text-field>
 
-                <v-textarea clearable 
+                <v-textarea clearable
                 v-model="description"
                 label="description"
-                
+
                 >
 
-                </v-textarea>   
+                </v-textarea>
                 <v-file-input
                   ref="file"
-                  v-on:change="setfile"  
+                  v-on:change="setfile"
                   type="file"
                   v-model="file_store"
                   :rules="fileRules"
                   label="Choose a file"
-                ></v-file-input>             
+                ></v-file-input>
                 <v-btn type="submit" color="primary" block class="mt-2">
                     Post
                 </v-btn>
@@ -43,24 +42,23 @@
 
             </v-form>
             <div class="mt-2">
-                
+
             </div>
-                
+
         </v-sheet>
         </div>
 
-        
-        
+
+
     </div>
 </template>
 
 <script>
 import axios from 'axios';
-import Navbar from "@/components/Navbar";
 import Sidebar from '@/components/Sidebar';
 
 export default {
-    components: {Navbar, Sidebar,},
+    components: {Sidebar,},
     data: () => ({
         file_store: null,
         title: "",
