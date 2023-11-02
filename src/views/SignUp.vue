@@ -9,7 +9,7 @@
             >
             {{this.alertMessage}}
             </v-alert>
-            <v-form @submit.prevent>
+            <v-form ref="form" @submit.prevent="register">
                 <v-text-field
                           v-model="username"
                           name="username"
@@ -17,6 +17,7 @@
                           type="text"
                           placeholder="username"
                           required
+                          @input="validate"
                           :rules="usernameRule"
                         ></v-text-field>
 
@@ -27,6 +28,7 @@
                           type="password"
                           placeholder="password"
                           required
+                          @input="validate"
                           :rules="passwordRule"
                         ></v-text-field>
 
@@ -37,10 +39,11 @@
                           type="password"
                           placeholder="confirm password"
                           required
+                          @input="validate"
                           :rules="confirmPasswordRule"
                         ></v-text-field>
 
-                <v-btn type="submit" color="primary" block class="mt-2">Create</v-btn>
+                <v-btn type="submit" color="primary" block class="mt-2" :disabled="!isFormValid">Create</v-btn>
             </v-form>
         </v-sheet>
     </div>
@@ -55,6 +58,7 @@ export default {
           username: '',
           password: '',
           confirmPassword: '',
+          isFormValid: false,
           showAlert: false,
           alertMessage: '',
           usernameRule: [
@@ -85,6 +89,11 @@ export default {
       };
   },
   methods: {
+    async validate() {
+        const { valid } = await this.$refs.form.validate()
+
+        if (valid) {this.isFormValid = true}
+      },
     async register()
     {
       let data = new FormData();

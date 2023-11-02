@@ -3,7 +3,6 @@ import { ref } from "vue";
 import axios from 'axios';
 import InfiniteLoading from "v3-infinite-loading";
 import "v3-infinite-loading/lib/style.css";
-import store from '../store';
 
 const contents = ref([]);
 const load = async $state => {
@@ -81,7 +80,7 @@ const load = async $state => {
                                     src="https://flowbite.com/docs/images/people/profile-picture-2.jpg"
                                     >
                             </p>
-                            
+
                             <p>
                                 {{ this.username }}
                             </p>
@@ -134,12 +133,12 @@ const load = async $state => {
                         </button> -->
 
                     </footer>
-                    
+
                     <div>
                         <h1 class="text-xl" style="padding-top: 18px;">
                         Title: {{ this.currentVideo.title }}
                         </h1>
-                    
+
                     <p class="text-base" style="padding-top: 18px;">
                         Description: {{ this.currentVideo.subtitle }}
                     </p>
@@ -238,10 +237,10 @@ const load = async $state => {
                         </div>
                     <!-- <img v-bind:src="'https://toktik-s3-videos.sgp1.digitaloceanspaces.com/' + content.thumbnail + 'thumbnail.png'" class="w-1/2 place-content-center h-128"> this.$refs.videoPlayer[index].play() -->
                     </div>
-                    
 
-                    
-                </div>                
+
+
+                </div>
             </div>
         </div>
         <InfiniteLoading @infinite="load" />

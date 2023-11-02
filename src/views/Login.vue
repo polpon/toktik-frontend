@@ -9,10 +9,11 @@
           >
           {{this.alertMessage}}
           </v-alert>
-          <v-form class="rounded-md" fast-fail @submit.prevent>
+          <v-form ref="form" class="rounded-md">
               <v-text-field
               v-model="username"
               label="User Name"
+              @input="validate"
               :rules="usernameRule"
               >
               </v-text-field>
@@ -21,13 +22,14 @@
               v-model="password"
               label="password"
               type="password"
+              @input="validate"
               :rules="passwordRule"
               >
               </v-text-field>
               <a href="#" class="text-body-2 font-weight-regular">Forgot Password?</a>
 
           </v-form>
-          <v-btn type="submit" @click="login" color="primary" block class="mt-2">
+          <v-btn type="submit" :disabled="!isFormValid" @click="login" color="primary" block class="mt-2">
               Sign in
           </v-btn>
           <div class="mt-2">
@@ -55,6 +57,7 @@ export default {
           password: '',
           file_store: null,
           loading: true,
+          isFormValid: false,
           showAlert: false,
           alertMessage: '',
           usernameRule: [
@@ -74,6 +77,11 @@ export default {
       };
   },
   methods: {
+    async validate() {
+        const { valid } = await this.$refs.form.validate()
+
+        if (valid) {this.isFormValid = true}
+      },
     async login() {
       let data = new FormData();
 
