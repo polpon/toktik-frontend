@@ -57,8 +57,7 @@ export default {
           file_store: null,
           loading: true,
           showAlert: false,
-          alertType: '', // 'success' or 'error'
-          alertMessage: 'defeault',
+          alertMessage: '',
           usernameRule: [
             value => {
               if (value) {

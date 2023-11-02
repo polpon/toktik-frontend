@@ -1,6 +1,15 @@
 <template>
     <div class="d-flex align-center justify-center" style="height: 100vh">
         <v-sheet width="400" class="mx-auto">
+            <div style="margin-bottom: 20px;">
+              <v-alert
+                v-if="showAlert"
+                color="warning"
+                closable
+              >
+              {{this.alertMessage}}
+              </v-alert>
+            </div>
             <v-form fast-fail @submit.prevent="register">
                 <v-text-field
                           v-model="username"
@@ -47,6 +56,8 @@ export default {
           username: '',
           password: '',
           confirmPassword: '',
+          showAlert: false,
+          alertMessage: '',
           usernameRule: [
             value => {
               if (value) {
@@ -88,15 +99,18 @@ export default {
       data.append('username', this.username)
       data.append('password', this.password)
 
-      const response = await axios.post('/register', data)
-      if (response.status == 200)
-      {
+      const customAxiosRequestConfig = { skipAuthRefresh: true };
+
+      await axios.post('/register', data, customAxiosRequestConfig)
+      .then((res) => {
+        console.log("Success");
         this.$router.push("/");
-      } else {
-        console.warn(response.data)
-        // TODO: Handle error msg
-      }
-      return response
+      }).catch((err) => {
+        console.log("its joever");
+        const detail = err.response.data.detail;
+        this.alertMessage = detail;
+        this.showAlert = true;
+      })
     }
   }
 }
