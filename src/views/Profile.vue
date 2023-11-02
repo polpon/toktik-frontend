@@ -72,7 +72,7 @@
                         >
                         <v-spacer></v-spacer>
                         <div class="place-self-center" style="font-size: 2.2vh;">
-                            {{ video.title }}
+                            Title: {{ video.title }}
                         </div>
                         <v-spacer></v-spacer>
                         <div class="place-self-center" style="font-size: 2.2vh;">

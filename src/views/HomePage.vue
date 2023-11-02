@@ -213,7 +213,7 @@ const load = async $state => {
 
         <div style="overflow-y: auto;"  v-for="(content , index) in contents" :key="index">
             <div :ref="index" class="flex items-center justify-center" style="border-radius:2px;">
-                <div class="max-w-2xl rounded overflow-hidden justify-between p-4 leading-normal">
+                <div class="max-w-2xl rounded overflow-hidden justify-between p-4 leading-normal" style="width: 35vw;">
                     <div class="px-6 py-4">
                         <div class="font-bold text-xl mb-2">
                             {{ content.title }}
@@ -224,7 +224,7 @@ const load = async $state => {
                     </div>
 
                     <div class="justify-center flex items-center justify-center" @click="handleClick(index, content, contents)">
-                        <div class="col-start-2 col-span-4 row-start-1 row-span-14 video-js-responsive-container" style="height: 100vh; position: relative;">
+                        <div class="col-start-2 col-span-4 row-start-1 row-span-14 video-js-responsive-container" style="height: 80vh; position: relative;">
                             <video-player ref="videoPlayer" :options="content.videoOptions" class="video-js" :key="content.thumbnail" v-observe-visibility="(isVisible, entry) => visibilityChanged(isVisible, entry, this.$refs.videoPlayer[index])"/>
                         </div>
                     <!-- <img v-bind:src="'https://toktik-s3-videos.sgp1.digitaloceanspaces.com/' + content.thumbnail + 'thumbnail.png'" class="w-1/2 place-content-center h-128"> this.$refs.videoPlayer[index].play() -->
