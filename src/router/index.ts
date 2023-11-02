@@ -4,7 +4,7 @@ import type { CustomAxiosRequestConfig } from 'axios-auth-refresh/dist/utils';
 import store from '../store';
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory(process.env.BASE_URL),
   routes: [
     {
       path: '/login',

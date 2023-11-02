@@ -64,7 +64,7 @@ mounted() {
     this.localOptions.controls = this.controls;
 
     this.player = videojs(this.$refs.videoPlayer, this.localOptions, () => {
-    this.player.log('onPlayerReady', this);
+    // this.player.log('onPlayerReady', this);
     });
 
 

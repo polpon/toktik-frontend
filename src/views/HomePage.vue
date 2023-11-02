@@ -1,44 +1,3 @@
-<script setup>
-import { ref } from "vue";
-import axios from 'axios';
-import InfiniteLoading from "v3-infinite-loading";
-import "v3-infinite-loading/lib/style.css";
-
-const contents = ref([]);
-const load = async $state => {
-    console.log("loading...");
-
-    await axios.post("/get_random_video").then(res => {
-        console.log(res);
-        for (let each in res.data) {
-            const content = {
-                title: res.data[each].title,
-                subtitle: res.data[each].description,
-                thumbnail: res.data[each].uuid,
-                startAt: 0,
-                videoOptions: {
-                    // autoplay: true,
-                    // muted: true,
-                    controls: true,
-                    responsive: true,
-                    fluid: true,
-                    fill: true,
-                    preload: 'auto',
-                    poster: `/api/static/${res.data[each].uuid}/thumbnail.png`,
-                    sources: [
-                    {
-                        src: `/api/m3u8/static/${res.data[each].uuid}/master.m3u8`,
-                        type: 'application/vnd.apple.mpegurl'
-                    }
-                    ]
-                }
-            }
-        contents.value.push(content)
-        }
-    })
-};
-</script>
-
 <template>
     <div v-if="dialog" >
         <div class="flex flex-row h-screen hover:flex-row">
@@ -82,7 +41,7 @@ const load = async $state => {
                             </p>
 
                             <p>
-                                {{ this.username }}
+                                {{ this.currentVideo.owner }}
                             </p>
                             <p class="text-base text-gray-500" style="padding: 10px; padding-left: 40px;">
                                 <time pubdate datetime="2022-02-08"
@@ -233,7 +192,7 @@ const load = async $state => {
 
                     <div class="justify-center flex items-center justify-center" @click="handleClick(index, content, contents)">
                         <div class="col-start-2 col-span-4 row-start-1 row-span-14 video-js-responsive-container" style="height: 80vh; position: relative;">
-                            <video-player ref="videoPlayer" :options="content.videoOptions" class="video-js" :key="content.thumbnail" v-observe-visibility="(isVisible, entry) => visibilityChanged(isVisible, entry, this.$refs.videoPlayer[index])"/>
+                            <video-player ref="videoPlayer" :options="content.videoOptions" class="video-js" :key="content.thumbnail" v-observe-visibility="(isVisible, entry) => visibilityChanged(isVisible, entry, index)"/>
                         </div>
                     <!-- <img v-bind:src="'https://toktik-s3-videos.sgp1.digitaloceanspaces.com/' + content.thumbnail + 'thumbnail.png'" class="w-1/2 place-content-center h-128"> this.$refs.videoPlayer[index].play() -->
                     </div>
@@ -243,44 +202,99 @@ const load = async $state => {
                 </div>
             </div>
         </div>
-        <InfiniteLoading @infinite="load" />
+        <InfiniteLoading @infinite="infiniteHandler" />
     </div>
 </template>
 
 <script>
+import axios from 'axios';
 import Sidebar from '@/components/Sidebar';
 import VideoPlayer from '@/components/VideoPlayer.vue';
+import InfiniteLoading from "v3-infinite-loading";
+import "v3-infinite-loading/lib/style.css";
 
 export default {
-    components: {Sidebar, VideoPlayer},
+    components: {Sidebar, VideoPlayer, InfiniteLoading},
+
+    data: () => ({
+        contents: [],
+        dialog: false,
+        currentScrollVideo: "",
+        currentVideo: "",
+        currentIndex: "",
+        disableButtonUp: false,
+        disableButtonDown: false,
+        username: "Michael Gough",
+        time: "Feb. 8, 2022",
+        message: "This is super coolas doask;djs;ka kq;lwj dqwkdpoajkck;asjdk;ajsdkjaskldjaklsdjsaldksajkldasjdklasjdalksjdskdjaksldjasdjaksllk;dhf wabkufhbew;fblsadasdasdass ad;ljbjhfk asdh;fudasjfl;kasdfj ialsdfjfklasdfk;sdjflaskd;fasdklfklasdjfksjf;kasjfsjadfjsadfjsdlkfjakdsl",
+        comment_buttons: true,
+        itemMenus: [
+            {
+                title: 'Edit',
+            },
+            {
+                title: 'Remove',
+            },
+        ],
+        videos: [
+            {
+                thumbnail: "./src/assets/toktik.png",
+                link: ""
+            },
+        ],
+        comments: [
+            {
+                username: "Andrew Alfred",
+                comment: 'This is super coolas doask;djs;ka kq;lwj dqwkdpoajkck;asjdk;ajsdkjaskldjaklsdjsaldksajkldasjdklasjdalksjdskdjaksldjasdjaksllk;dhf wabkufhbew;fblsadasdasdass ad;ljbjhfk asdh;fudasjfl;kasdfj ialsdfjfklasdfk;sdjflaskd;fasdklfklasdjfksjf;kasjfsjadfjsadfjsdlkfjakdsl',
+                time: "2 min"
+            },
+        ],
+    }),
     methods: {
-        visibilityChanged (isVisible, entry, context) {
-            // this.isVisible = isVisible
+        infiniteHandler($state) {
+            console.log("loading...");
+
+            axios.post("/get_random_video").then(res => {
+                console.log(res);
+                for (let each in res.data) {
+                    const content = {
+                        title: res.data[each].title,
+                        subtitle: res.data[each].description,
+                        thumbnail: res.data[each].uuid,
+                        owner: res.data[each].owner_uuid,
+                        startAt: 0,
+                        videoOptions: {
+                            // autoplay: true,
+                            // muted: true,
+                            controls: true,
+                            responsive: true,
+                            fluid: true,
+                            fill: true,
+                            preload: 'auto',
+                            poster: `/api/static/${res.data[each].uuid}/thumbnail.png`,
+                            sources: [
+                            {
+                                src: `/api/m3u8/static/${res.data[each].uuid}/master.m3u8`,
+                                type: 'application/vnd.apple.mpegurl'
+                            }
+                            ]
+                        }
+                    }
+                    this.contents.push(content)
+                }
+            })
+        },
+        visibilityChanged (isVisible, entry, index) {
+            const player = this.$refs.videoPlayer[index].getPlayer();
+            this.isVisible = isVisible
             console.log(isVisible)
-            isVisible ? context.play() : context.pause();
+            isVisible ? player.play() : player.pause();
         },
         handleClick(index, content, contents) {
             const player = this.$refs.videoPlayer[index].getPlayer();
-            console.log(player.currentTime());
 
             this.openDialog(index, content, contents, player.currentTime());
         },
-        // async get_videos() {
-        //     console.log("Getting videos...")
-        //     await axios.post("/get_random_video").then(res => {
-        //         for (let each in res.data) {
-        //         const content = {title: res.data[each],
-        //         subtitle: res.data[each],
-        //         thumbnail: res.data[each]}
-
-        //         this.contents.push(content)
-
-
-        //         // this.contents.push(res)
-        //         // console.log(res)
-        //         }
-        //     })
-        // },
         trigger_comment() {
             this.comment_buttons = true
         },
@@ -288,19 +302,16 @@ export default {
             this.comment_buttons = false
         },
         openDialog(index, context, contents, curTime = 0) {
-        // console.log(this.contents.length)
         context.startAt = curTime;
-        console.log(contents)
         this.dialog = true;
         this.$route.meta.hideNavbar = this.dialog;
         this.currentVideo = context
+        // console.log(this.currentVideo)
         this.currentScrollVideo = index
         this.currentIndex = index
         // this.disableButtonDown = false
         // this.disableButtonUp = false
         this.disableOnOffbuttons(contents)
-                // console.log(this.contents)
-        // console.log(this.contents[0])
         },
         disableOnOffbuttons(contents) {
         if (this.currentIndex == 0) {
@@ -377,58 +388,9 @@ export default {
 
 
     },
-    data: () => ({
-        dialog: false,
-        currentScrollVideo: "",
-        currentVideo: "",
-        currentIndex: "",
-        disableButtonUp: false,
-        disableButtonDown: false,
-
-        username: "Michael Gough",
-        time: "Feb. 8, 2022",
-        message: "This is super coolas doask;djs;ka kq;lwj dqwkdpoajkck;asjdk;ajsdkjaskldjaklsdjsaldksajkldasjdklasjdalksjdskdjaksldjasdjaksllk;dhf wabkufhbew;fblsadasdasdass ad;ljbjhfk asdh;fudasjfl;kasdfj ialsdfjfklasdfk;sdjflaskd;fasdklfklasdjfksjf;kasjfsjadfjsadfjsdlkfjakdsl",
-        comment_buttons: true,
-        itemMenus: [
-            {
-                title: 'Edit',
-            },
-            {
-                title: 'Remove',
-            },
-        ],
-        videos: [
-            {
-                thumbnail: "./src/assets/toktik.png",
-                link: ""
-            },
-        ],
-        comments: [
-            {
-                username: "Andrew Alfred",
-                comment: 'This is super coolas doask;djs;ka kq;lwj dqwkdpoajkck;asjdk;ajsdkjaskldjaklsdjsaldksajkldasjdklasjdalksjdskdjaksldjasdjaksllk;dhf wabkufhbew;fblsadasdasdass ad;ljbjhfk asdh;fudasjfl;kasdfj ialsdfjfklasdfk;sdjflaskd;fasdklfklasdjfksjf;kasjfsjadfjsadfjsdlkfjakdsl',
-                time: "2 min"
-            },
-        ],
-        videoOptionsCheck: {
-        autoplay: true,
-        controls: true,
-        responsive: true,
-        fluid: true,
-        preload: 'auto',
-        poster: "/api/static/a98c6b2e-f574-44f6-b492-7e77311ae757/thumbnail.png",
-        sources: [
-          {
-            src:
-              '/api/m3u8/static/a98c6b2e-f574-44f6-b492-7e77311ae757/master.m3u8',
-              type: 'application/vnd.apple.mpegurl'
-          }
-        ]
-      }
-    }),
-    async beforeMount() {
+    beforeMount() {
       this.username = this.$store.state.username
-    }
+    },
 }
 </script>
 
