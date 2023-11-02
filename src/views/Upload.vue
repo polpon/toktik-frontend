@@ -1,10 +1,10 @@
 <template>
     <Sidebar/>
 
-    <div class="d-flex align-center justify-center" style="height: 100vh">
+    <div class="d-flex align-center justify-center" style="height: 100%">
         <div style="width: 100vh;">
-            <v-sheet class="align-center justify-center mx-auto" width="600">
-            <v-form fast-fail @submit.prevent="submitFrom">
+            <v-sheet class="align-center justify-center mx-auto" width="600" style="padding: 10px; border-radius: 8px;">
+            <v-form @submit.prevent="submitFrom">
                 <v-text-field
                 width=""
                 clearable
@@ -17,7 +17,6 @@
                 <v-textarea clearable
                 v-model="description"
                 label="description"
-
                 >
 
                 </v-textarea>
@@ -25,7 +24,6 @@
                   ref="file"
                   v-on:change="setfile"
                   type="file"
-                  v-model="file_store"
                   :rules="fileRules"
                   label="Choose a file"
                 ></v-file-input>
