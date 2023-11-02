@@ -14,7 +14,7 @@
             Login
             </v-btn>
             </RouterLink>
-            
+
             <RouterLink
                 style="text-decoration: none; color: inherit;"
                 :to="{ name: 'signup' }">
@@ -37,13 +37,13 @@
                 Logout
               </v-btn>
             </RouterLink>
-            
 
-              
 
-            
+
+
+
           </div>
- 
+
       </v-app-bar>
 </template>
 
@@ -58,7 +58,7 @@ export default {
   // }),
   methods: {
     getLoginStatus() {
-      console.log(this.$store.state.logined)
+      // console.log(this.$store.state.logined)
       return this.$store.state.logined
     }
 
