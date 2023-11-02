@@ -1,9 +1,15 @@
-
-
 <template>
-<Navbar/>
-  <div class="d-flex align-center justify-center rounded-md" style="height: 100vh">
+  <div class="d-flex align-center justify-center rounded-md" style="display: flex; height: 100%;">
       <v-sheet width="450" class="mx-auto rounded-md">
+        <div style="margin-bottom: 20px;">
+          <v-alert
+          v-if="showAlert"
+          color="warning"
+          closable
+        >
+        {{this.alertMessage}}
+        </v-alert>
+        </div>
           <v-form class="rounded-md" fast-fail @submit.prevent="login">
               <v-text-field
               v-model="username"
@@ -20,11 +26,11 @@
               >
               </v-text-field>
               <a href="#" class="text-body-2 font-weight-regular">Forgot Password?</a>
-              <v-btn type="submit" color="primary" block class="mt-2">
-                Sign in
-              </v-btn>
 
           </v-form>
+          <v-btn type="submit" @click="login" color="primary" block class="mt-2">
+              Sign in
+          </v-btn>
           <div class="mt-2">
             <RouterLink
                 style="text-decoration: none; color: inherit;"
@@ -42,17 +48,17 @@
 
 <script>
 import axios from 'axios';
-import Navbar from "@/components/Navbar";
-import { file } from '@babel/types';
 
 export default {
-  components: {Navbar},
   data() {
       return {
           username: '',
           password: '',
           file_store: null,
           loading: true,
+          showAlert: false,
+          alertType: '', // 'success' or 'error'
+          alertMessage: 'defeault',
           usernameRule: [
             value => {
               if (value) {
@@ -82,15 +88,17 @@ export default {
       data.append('username', this.username)
       data.append('password', this.password)
 
-      const response = await axios.post('/login', data)
-      if (response.status == 200)
-      {
+      const customAxiosRequestConfig = { skipAuthRefresh: true };
+
+      await axios.post('/login', data, customAxiosRequestConfig).then((res) => {
+        console.log("Success");
         this.$router.push("/");
-      } else {
-        console.warn(response.data)
-        // TODO: Handle error msg
-      }
-      return response
+      }).catch((err) => {
+        console.log("its joever");
+        const detail = err.response.data.detail;
+        this.alertMessage = detail;
+        this.showAlert = true;
+      })
     },
     setfile() {
         this.file_store = this.$refs.file.files[0];

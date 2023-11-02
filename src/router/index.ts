@@ -10,7 +10,7 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: () => import('@/views/Login.vue'),
-      meta: { checkAuth: true }
+      // meta: { checkAuth: true }
     },
     {
       path: '/logout',
@@ -39,7 +39,7 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: () => import('@/views/HomePage.vue'),
-      meta: { requiresAuth: true }
+      meta: { requiresAuth: true, hideNavbar: false }
     },
     {
       path: '/profile',

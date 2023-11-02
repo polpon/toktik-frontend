@@ -1,5 +1,5 @@
 <script setup>
-import { ref, getCurrentInstance } from "vue";
+import { ref } from "vue";
 import axios from 'axios';
 import InfiniteLoading from "v3-infinite-loading";
 import "v3-infinite-loading/lib/style.css";
@@ -202,15 +202,12 @@ const load = async $state => {
     </div>
 
 
-    <Navbar v-if="dialog == false"/>
     <Sidebar v-if="dialog == false"/>
 
 
 
 
-
-
-    <div v-if="dialog == false" class="comment-list" style="height: 100vh; overflow-y: auto;">
+    <div v-if="dialog == false" class="comment-list" style="height: 100%; overflow-y: auto;">
         <div v-if="scrollToMyIndex"></div>
 
         <div style="overflow-y: auto;"  v-for="(content , index) in contents" :key="index">
@@ -244,13 +241,11 @@ const load = async $state => {
 </template>
 
 <script>
-import { ref, getCurrentInstance } from 'vue';
-import Navbar from "@/components/Navbar";
 import Sidebar from '@/components/Sidebar';
 import VideoPlayer from '@/components/VideoPlayer.vue';
 
 export default {
-    components: {Navbar, Sidebar, VideoPlayer},
+    components: {Sidebar, VideoPlayer},
     methods: {
         visibilityChanged (isVisible, entry, context) {
             // this.isVisible = isVisible
@@ -290,6 +285,7 @@ export default {
         context.startAt = curTime;
         console.log(contents)
         this.dialog = true;
+        this.$route.meta.hideNavbar = this.dialog;
         this.currentVideo = context
         this.currentScrollVideo = index
         this.currentIndex = index
@@ -347,6 +343,7 @@ export default {
         openVideoInRelateVideo(filename, index, contents) {
             this.currentVideo = filename;
             this.dialog = true;
+            this.$route.meta.hideNavbar = this.dialog;
             this.currentIndex = index;
             console.log(this.currentIndex)
             this.disableOnOffbuttons(contents);
@@ -361,6 +358,7 @@ export default {
         },
         closeDialog() {
         this.dialog = false;
+        this.$route.meta.hideNavbar = this.dialog;
         setTimeout(() => this.scrollToMyIndex(), 1000);
         },
 

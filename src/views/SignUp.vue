@@ -1,50 +1,47 @@
 <template>
-    <Navbar/>
-        <div class="d-flex align-center justify-center" style="height: 100vh">
-            <v-sheet width="400" class="mx-auto">
-                <v-form fast-fail @submit.prevent="register">
-                    <v-text-field
-                              v-model="username"
-                              name="username"
-                              label="Username"
-                              type="text"
-                              placeholder="username"
-                              required
-                              :rules="usernameRule"
-                           ></v-text-field>
+    <div class="d-flex align-center justify-center" style="height: 100vh">
+        <v-sheet width="400" class="mx-auto">
+            <v-form fast-fail @submit.prevent="register">
+                <v-text-field
+                          v-model="username"
+                          name="username"
+                          label="Username"
+                          type="text"
+                          placeholder="username"
+                          required
+                          :rules="usernameRule"
+                        ></v-text-field>
 
-                    <v-text-field
-                              v-model="password"
-                              name="password"
-                              label="Password"
-                              type="password"
-                              placeholder="password"
-                              required
-                              :rules="passwordRule"
-                           ></v-text-field>
+                <v-text-field
+                          v-model="password"
+                          name="password"
+                          label="Password"
+                          type="password"
+                          placeholder="password"
+                          required
+                          :rules="passwordRule"
+                        ></v-text-field>
 
-                   <v-text-field
-                              v-model="confirmPassword"
-                              name="confirmPassword"
-                              label="Confirm Password"
-                              type="password"
-                              placeholder="cocnfirm password"
-                              required
-                              :rules="confirmPasswordRule"
-                           ></v-text-field>
+                <v-text-field
+                          v-model="confirmPassword"
+                          name="confirmPassword"
+                          label="Confirm Password"
+                          type="password"
+                          placeholder="cocnfirm password"
+                          required
+                          :rules="confirmPasswordRule"
+                        ></v-text-field>
 
-                    <v-btn type="submit" color="primary" block class="mt-2">Create</v-btn>
-                </v-form>
-            </v-sheet>
-        </div>
+                <v-btn type="submit" color="primary" block class="mt-2">Create</v-btn>
+            </v-form>
+        </v-sheet>
+    </div>
 </template>
 
 <script>
 import axios from 'axios';
-import Navbar from "@/components/Navbar";
 
 export default {
-    components: {Navbar},
     data() {
       return {
           username: '',
