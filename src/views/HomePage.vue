@@ -71,26 +71,28 @@ const load = async $state => {
 
         <v-card style="width: 30%;
                 height: 100%;">
-                <article class="p-6 text-base bg-white" style="max-height: 25vh;  overflow: auto;">
+                <!-- <article class="p-6 text-base bg-white" style="max-height: 25vh;  overflow: auto;"> -->
+                <article class="p-6 text-base bg-white" style="min-height: 100vh;  overflow: auto;">
                     <footer class="flex justify-between items-center mb-2">
-                        <div class="flex items-center">
+                        <div class="flex items-center text-xl">
                             <p class="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold">
                                 <img
                                     class="mr-2 w-12 h-12 rounded-full"
                                     src="https://flowbite.com/docs/images/people/profile-picture-2.jpg"
                                     >
                             </p>
+                            
                             <p>
                                 {{ this.username }}
                             </p>
-                            <p class="text-xs text-gray-500" style="padding: 10px;">
+                            <p class="text-base text-gray-500" style="padding: 10px; padding-left: 40px;">
                                 <time pubdate datetime="2022-02-08"
                                     title="February 8th, 2022">
                                     {{ this.time }}
                                 </time>
                             </p>
                         </div>
-                            <button data-dropdown-toggle="dropdownDotsHorizontal"
+                            <!-- <button data-dropdown-toggle="dropdownDotsHorizontal"
                             class="inline-flex
                                 items-center
                                 p-2 text-sm
@@ -129,19 +131,26 @@ const load = async $state => {
                                 </v-list-item>
                             </v-list>
                             </v-menu>
-                        </button>
+                        </button> -->
 
                     </footer>
-                    <p>
-                        {{ this.message }}
+                    
+                    <div>
+                        <h1 class="text-xl" style="padding-top: 18px;">
+                        Title: {{ this.currentVideo.title }}
+                        </h1>
+                    
+                    <p class="text-base" style="padding-top: 18px;">
+                        Description: {{ this.currentVideo.subtitle }}
                     </p>
+                    </div>
                 </article>
                 <!-- <v-divider class="border-opacity-0"></v-divider> -->
 
-            <div class="bg-white" style="height: 40px">
-                <v-btn variant="text"
+            <!-- <div class="bg-white" style="height: 40px"> -->
+            <!-- <v-btn variant="text"
                 @click="trigger_comment"
-                style="width: 50%;
+                style="width: 100%;
                 height: 100%;">
                     Comments
                 </v-btn>
@@ -151,9 +160,9 @@ const load = async $state => {
                 height: 100%;">
                     relate video
                 </v-btn>
-            </div>
+            </div> -->
 
-            <v-divider class="border-opacity-75"></v-divider>
+            <!-- <v-divider class="border-opacity-75"></v-divider> -->
 
 
 
@@ -163,8 +172,8 @@ const load = async $state => {
                 </div>  -->
 
 
-            <div v-if="this.comment_buttons" class="comment-list bg-white" style="height: 100vh; overflow-y: auto;">
-                <!-- <v-infinite-scroll overflow-auto :height="300" :items="items" :onLoad="get_videos">
+            <!-- <div v-if="this.comment_buttons" class="comment-list bg-white" style="height: 100vh; overflow-y: auto;">
+                <v-infinite-scroll overflow-auto :height="300" :items="items" :onLoad="get_videos">
                     <div style="overflow-y: auto;"  v-for="comment in comments" :key="comment">
                         <div class="flex block" style="padding-top: 10px; padding-left: 10px;">
                             <img src="/src/assets/toktik.png" style="height: 55px; width: 70px; padding-left: 10px; padding-right: 10px; padding-top: 5px;">
@@ -174,10 +183,10 @@ const load = async $state => {
                             </div>
                         </div>
                     </div>
-                </v-infinite-scroll> -->
-            </div>
+                </v-infinite-scroll>
+            </div> -->
 
-            <div v-else class="comment-list bg-white" style="height: 72vh; overflow-y: auto;">
+            <!-- <div class="comment-list bg-white" style="height: 72vh; overflow-y: auto;">
                 <v-infinite-scroll overflow-auto :height="200" :items="items">
                     <v-row>
                     <v-col
@@ -196,7 +205,7 @@ const load = async $state => {
 
                     </v-row>
                 </v-infinite-scroll>
-                </div>
+                </div> -->
 
         </v-card>
         </div>
@@ -213,7 +222,7 @@ const load = async $state => {
 
         <div style="overflow-y: auto;"  v-for="(content , index) in contents" :key="index">
             <div :ref="index" class="flex items-center justify-center" style="border-radius:2px;">
-                <div class="max-w-2xl rounded overflow-hidden justify-between p-4 leading-normal" style="width: 35vw;">
+                <div class="  p-6 " style="width: 35vw; padding-bottom: 50px;">
                     <div class="px-6 py-4">
                         <div class="font-bold text-xl mb-2">
                             {{ content.title }}
@@ -229,12 +238,10 @@ const load = async $state => {
                         </div>
                     <!-- <img v-bind:src="'https://toktik-s3-videos.sgp1.digitaloceanspaces.com/' + content.thumbnail + 'thumbnail.png'" class="w-1/2 place-content-center h-128"> this.$refs.videoPlayer[index].play() -->
                     </div>
-                    <div class="px-6 pt-4 pb-2">
-                        <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#photography</span>
-                        <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#travel</span>
-                        <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#winter</span>
-                    </div>
-                </div>
+                    
+
+                    
+                </div>                
             </div>
         </div>
         <InfiniteLoading @infinite="load" />
@@ -420,6 +427,9 @@ export default {
         ]
       }
     }),
+    async beforeMount() {
+      this.username = this.$store.state.username
+    }
 }
 </script>
 

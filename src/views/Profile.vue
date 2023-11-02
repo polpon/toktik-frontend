@@ -22,14 +22,8 @@
             </div>
             <div class="col-start-3 col-span-2 row-start-3 row-span-2 pt-6" style="width: auto; height: auto;">
 
-                <v-btn style="font-size: 12px;">
-                    Edit Profile
-                </v-btn>
             </div>
 
-            <div class="row-start-5 row-span-2 col-span-4 pl-6 pb-6">
-                following follower like ?
-            </div>
         </div>
 
     </v-card>
