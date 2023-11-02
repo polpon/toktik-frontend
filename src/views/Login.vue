@@ -1,16 +1,15 @@
 <template>
   <div class="d-flex align-center justify-center rounded-md" style="display: flex; height: 100%;">
-      <v-sheet width="450" class="mx-auto rounded-md">
-        <div style="margin-bottom: 20px;">
+      <v-sheet width="450" class="mx-auto rounded-md" style="padding: 10px; border-radius: 8px;">
           <v-alert
-          v-if="showAlert"
-          color="warning"
-          closable
-        >
-        {{this.alertMessage}}
-        </v-alert>
-        </div>
-          <v-form class="rounded-md" fast-fail @submit.prevent="login">
+            v-model="showAlert"
+            color="warning"
+            closable
+            style="margin-bottom: 20px;"
+          >
+          {{this.alertMessage}}
+          </v-alert>
+          <v-form class="rounded-md" fast-fail @submit.prevent>
               <v-text-field
               v-model="username"
               label="User Name"
@@ -60,22 +59,16 @@ export default {
           alertMessage: '',
           usernameRule: [
             value => {
-              if (value) {
-                return true
-              }
-              else {
-                return "Enter the username"
-              }
+              if (value?.length > 5) return true
+
+              return 'Must be at least 6 characters.'
             }
           ],
           passwordRule: [
             value => {
-              if (value) {
-                return true
-              }
-              else {
-                return "Enter the password"
-              }
+              if (value?.length > 7) return true
+
+              return 'Must be at least 8 characters.'
             }
           ]
       };

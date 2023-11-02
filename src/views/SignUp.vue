@@ -1,16 +1,15 @@
 <template>
     <div class="d-flex align-center justify-center" style="height: 100vh">
-        <v-sheet width="400" class="mx-auto">
-            <div style="margin-bottom: 20px;">
-              <v-alert
-                v-if="showAlert"
-                color="warning"
-                closable
-              >
-              {{this.alertMessage}}
-              </v-alert>
-            </div>
-            <v-form fast-fail @submit.prevent="register">
+        <v-sheet width="400" class="mx-auto" style="padding: 10px; border-radius: 8px;">
+            <v-alert
+              v-model="showAlert"
+              color="warning"
+              closable
+              style="margin-bottom: 20px;"
+            >
+            {{this.alertMessage}}
+            </v-alert>
+            <v-form @submit.prevent>
                 <v-text-field
                           v-model="username"
                           name="username"
@@ -36,7 +35,7 @@
                           name="confirmPassword"
                           label="Confirm Password"
                           type="password"
-                          placeholder="cocnfirm password"
+                          placeholder="confirm password"
                           required
                           :rules="confirmPasswordRule"
                         ></v-text-field>
@@ -60,31 +59,25 @@ export default {
           alertMessage: '',
           usernameRule: [
             value => {
-              if (value) {
-                return true
-              }
-              else {
-                return "Enter the username"
-              }
+              if (value?.length > 5) return true
+
+              return 'Must be at least 6 characters.'
             }
           ],
           passwordRule: [
             value => {
-              if (value) {
-                return true
-              }
-              else {
-                return "Enter the password"
-              }
+              if (value?.length > 7) return true
+
+              return 'Must be at least 8 characters.'
             }
           ],
           confirmPasswordRule: [
             value => {
-                if (value == this.password) {
+                if (value == this.password && this.password?.length > 7) {
                     return true
                 }
                 else {
-                    return "does not match the password"
+                    return "Password does not match"
                 }
             }
 
