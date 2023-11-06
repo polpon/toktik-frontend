@@ -102,6 +102,12 @@
                         Description: {{ this.currentVideo.subtitle }}
                     </p>
                     </div>
+
+                    <div style="border: 2px solid grey; width: 60px; padding: 5px; margin-top: 15px;border-radius: 10px; display: inline-block;" @click="toggleLikeIcon(this.currentVideo)">
+                        <v-icon :icon="currentIcon" style="padding-left: 5px;"/>
+                        <div style="width: 5px; display: inline-block;"></div>
+                        {{ this.currentVideo.likeCount }}
+                    </div>
                 </article>
                 <!-- <v-divider class="border-opacity-0"></v-divider> -->
 
@@ -180,7 +186,7 @@
 
         <div style="overflow-y: auto;"  v-for="(content , index) in contents" :key="index">
             <div :ref="index" class="flex items-center justify-center" style="border-radius:2px;">
-                <div class="  p-6 " style="width: 35vw; padding-bottom: 50px;">
+                <div class="  p-6 " style="width: 30vw; padding-bottom: 50px;">
                     <div class="px-6 py-4">
                         <div class="font-bold text-xl mb-2">
                             {{ content.title }}
@@ -191,14 +197,24 @@
                     </div>
 
                     <div class="justify-center flex items-center justify-center" @click="handleClick(index, content, contents)">
-                        <div class="col-start-2 col-span-4 row-start-1 row-span-14 video-js-responsive-container" style="height: 80vh; position: relative;">
-                            <video-player ref="videoPlayer" :options="content.videoOptions" class="video-js" :key="content.thumbnail" v-observe-visibility="(isVisible, entry) => visibilityChanged(isVisible, entry, index)"/>
+                        <div class="col-start-2 col-span-4 row-start-1 row-span-14 video-js-responsive-container" style="height: 70vh; position: relative;">
+                            <video-player ref="videoPlayer" :options="content.videoOptions" class="video-js" :key="content.thumbnail" v-observe-visibility="{
+                                callback: (isVisible, entry) => visibilityChanged(isVisible, entry, index),
+                                intersection: {
+                                    threshold: 0.7,
+                                },
+                                }"/>
                         </div>
                     <!-- <img v-bind:src="'https://toktik-s3-videos.sgp1.digitaloceanspaces.com/' + content.thumbnail + 'thumbnail.png'" class="w-1/2 place-content-center h-128"> this.$refs.videoPlayer[index].play() -->
                     </div>
 
-
-
+                    <div class="px-6 py-4">
+                        <div style="background-color: grey; width: 60px; padding: 5px; border-radius: 10px; display: inline-block;" @click="toggleLikeIcon(content)">
+                            <v-icon :icon="currentIcon" style="padding-left: 5px;"/>
+                            <div style="width: 5px; display: inline-block;"></div>
+                            {{ content.likeCount }}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -212,6 +228,11 @@ import Sidebar from '@/components/Sidebar';
 import VideoPlayer from '@/components/VideoPlayer.vue';
 import InfiniteLoading from "v3-infinite-loading";
 import "v3-infinite-loading/lib/style.css";
+import debounce from 'lodash.debounce';
+
+const updateLike = debounce((like) => {
+    console.log(like)
+}, 1000)
 
 export default {
     components: {Sidebar, VideoPlayer, InfiniteLoading},
@@ -224,6 +245,7 @@ export default {
         currentIndex: "",
         disableButtonUp: false,
         disableButtonDown: false,
+        currentIcon: "mdi-thumb-up-outline",
         username: "Michael Gough",
         time: "Feb. 8, 2022",
         message: "This is super coolas doask;djs;ka kq;lwj dqwkdpoajkck;asjdk;ajsdkjaskldjaklsdjsaldksajkldasjdklasjdalksjdskdjaksldjasdjaksllk;dhf wabkufhbew;fblsadasdasdass ad;ljbjhfk asdh;fudasjfl;kasdfj ialsdfjfklasdfk;sdjflaskd;fasdklfklasdjfksjf;kasjfsjadfjsadfjsdlkfjakdsl",
@@ -251,6 +273,13 @@ export default {
         ],
     }),
     methods: {
+        toggleLikeIcon(context) {
+            this.currentIcon = this.currentIcon === "mdi-thumb-up-outline" ? "mdi-thumb-up" : "mdi-thumb-up-outline";
+
+            context.likeCount = this.currentIcon === "mdi-thumb-up" ? context.likeCount + 1 : context.likeCount - 1;
+
+            updateLike(context.likeCount);
+        },
         infiniteHandler($state) {
             console.log("loading...");
 
@@ -263,6 +292,7 @@ export default {
                         thumbnail: res.data[each].uuid,
                         owner: res.data[each].owner_uuid,
                         startAt: 0,
+                        likeCount: 0,
                         videoOptions: {
                             // autoplay: true,
                             // muted: true,
@@ -287,7 +317,7 @@ export default {
         visibilityChanged (isVisible, entry, index) {
             const player = this.$refs.videoPlayer[index].getPlayer();
             this.isVisible = isVisible
-            console.log(isVisible)
+            // console.log(isVisible)
             isVisible ? player.play() : player.pause();
         },
         handleClick(index, content, contents) {
