@@ -246,24 +246,8 @@ export default {
         disableButtonUp: false,
         disableButtonDown: false,
         currentIcon: "mdi-thumb-up-outline",
-        username: "Michael Gough",
         time: "Feb. 8, 2022",
-        message: "This is super coolas doask;djs;ka kq;lwj dqwkdpoajkck;asjdk;ajsdkjaskldjaklsdjsaldksajkldasjdklasjdalksjdskdjaksldjasdjaksllk;dhf wabkufhbew;fblsadasdasdass ad;ljbjhfk asdh;fudasjfl;kasdfj ialsdfjfklasdfk;sdjflaskd;fasdklfklasdjfksjf;kasjfsjadfjsadfjsdlkfjakdsl",
         comment_buttons: true,
-        itemMenus: [
-            {
-                title: 'Edit',
-            },
-            {
-                title: 'Remove',
-            },
-        ],
-        videos: [
-            {
-                thumbnail: "./src/assets/toktik.png",
-                link: ""
-            },
-        ],
         comments: [
             {
                 username: "Andrew Alfred",

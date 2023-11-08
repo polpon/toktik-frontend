@@ -1,7 +1,8 @@
 <template>
   <div>
+    <p>State: {{ connected }}</p>
   <div>
-    <v-btn @click="updateToDB">
+    <v-btn @click="reset">
       Reset
     </v-btn>
   </div>
@@ -28,17 +29,17 @@
                       <v-icon :icon="currentIcon" style="padding-left: 5px;"/>
                       <div style="width: 5px; display: inline-block;"></div>
                       {{ test.likeCount }}
-                      
+
                   </div>
-                  
+
               </div>
               <div>
                   <p>View Count: {{test.viewCount }}</p>
               </div>
-              
+
           </div>
       </div>
-    
+
     </div>
 
     <!-- <p>View Count: {{initViewCount + viewCount }}</p>
@@ -49,7 +50,8 @@
 <script>
 // import { ref, onMounted } from 'vue';
 import io from 'socket.io-client';
-import axios from 'axios';
+import { state, socket, setSocket } from "@/socket";
+import axios from 'axios'
 
 export default {
   data() {
@@ -79,13 +81,18 @@ export default {
             viewCount: 0,
             likeCount: 0
           },
-      
+
       ],
       // index, count
       update_videos: {},
 
     };
-    
+
+  },
+  computed: {
+    connected() {
+      return state.connected;
+    }
   },
   methods: {
     // incrementViews() {
@@ -108,13 +115,15 @@ export default {
       // });
     },
     reset() {
+      socket.emit('videoData', "yangisawesome.mp4")
+      setSocket("yangisawesome.mp4")
       // console.log("WHAT HAPPEN")
-      const whatever = 0
+      // const whatever = 0
       // this.socket.emit('resetCount', whatever)
 
       // console.log(this.tests)
-      console.log("running test function")
-      this.socket.emit('resetCount', whatever)
+      // console.log("running test function")
+      // this.socket.emit('resetCount', whatever)
 
       // this.socket.on('updateViewCount', (videos) => {
       // console.log(videos)
@@ -148,17 +157,25 @@ export default {
       this.socket.on('updateViewCount', (videos) => {
         this.update_videos = videos
         // console.log(this.update_videos)
+
+        for (var index in this.update_videos) {
+          console.log(index)
+          var video = this.tests.find((v) => v.id === index);
+          if (video) {
+            video.viewCount = this.update_videos[index]
+          }
+        }
       });
 
-      console.log(this.update_videos)
-      for (var index in this.update_videos) {
-        console.log(index)
-        var video = this.tests.find((v) => v.id === index);
-        if (video) {
-          video.viewCount = this.update_videos[index]
-        }
-      }
-      this.update_videos = {}
+      // console.log(this.update_videos)
+      // for (var index in this.update_videos) {
+      //   console.log(index)
+      //   var video = this.tests.find((v) => v.id === index);
+      //   if (video) {
+      //     video.viewCount = this.update_videos[index]
+      //   }
+      // }
+      // this.update_videos = {}
       this.reset()
       // this.socket.on('updateViewCount', (videoId, viewCount, videos) => {
       // console.log(videoId)
@@ -234,7 +251,7 @@ export default {
     // });
 
 
-    
+
 
 
     // this.socket.emit('getViews');
