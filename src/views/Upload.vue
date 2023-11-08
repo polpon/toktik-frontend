@@ -4,18 +4,29 @@
     <div class="d-flex align-center justify-center" style="height: 100%">
         <div style="width: 100vh;">
             <v-sheet class="align-center justify-center mx-auto" width="600" style="padding: 10px; border-radius: 8px;">
-            <v-form @submit.prevent="submitFrom">
+              <v-alert
+              v-model="showAlert"
+              color="warning"
+              closable
+              style="margin-bottom: 20px;"
+            >
+            {{this.alertMessage}}
+            </v-alert>
+            <v-form ref="form">
                 <v-text-field
                 width=""
                 clearable
                 v-model="title"
                 label="title"
                 :rules="titleRule"
+                @input="validate"
                 >
                 </v-text-field>
 
                 <v-textarea clearable
                 v-model="description"
+                :rules="descriptionRule"
+                @input="validate"
                 label="description"
                 >
 
@@ -23,18 +34,20 @@
                 <v-file-input
                   ref="file"
                   v-on:change="setfile"
+                  accept="video/*"
                   type="file"
-                  :rules="fileRules"
+                  :rules="videoRules"
+                  @change="validate"
                   label="Choose a file"
                 ></v-file-input>
-                <v-btn type="submit" color="primary" block class="mt-2">
+                <v-btn type="submit" :disabled="!isFormValid" @click="submitFrom" color="primary" block class="mt-2">
                     Post
                 </v-btn>
                 <RouterLink
                 style="text-decoration: none; color: inherit;"
                 :to="{ name: 'profile' }">
                     <v-btn type="submit" color="error" block class="mt-2">
-                        Cancal
+                        Cancel
                     </v-btn>
                 </RouterLink>
 
@@ -61,38 +74,39 @@ export default {
         file_store: null,
         title: "",
         description: "",
-        fileRules: [
-          value => {
-                if (value) {
-                  return true
-                }
-                else {
-                  return "Enter the file"
-                }
-              }
-        ],
+        isFormValid: false,
+        showAlert: false,
+        alertMessage: '',
         titleRule: [
-            value => {
-              if (value) {
-                return true
-              }
-              else {
-                return "Enter the title"
-              }
+          value => {
+            if (value) {
+              return true
             }
-          ],
-          videoRule: [
-            value => {
-              if (value) {
-                return true
-              }
-              else {
-                return "upload the videoRule"
-              }
+            else {
+              return "Enter the title"
             }
-          ]
+          }
+        ],
+        descriptionRule: [
+          value => {
+            if (value) {
+              return true
+            }
+            else {
+              return "Enter the description"
+            }
+          }
+        ],
+        videoRules: [
+          v => (v.some(vs => vs.size < 15728640)) || 'File size should be less than 15 MB!'
+        ],
     }),
     methods: {
+      async validate() {
+        const { valid } = await this.$refs.form.validate()
+
+        if (valid) {this.isFormValid = true}
+      },
       setfile() {
         this.file_store = this.$refs.file.files[0];
         console.log(this.file_store)
@@ -121,6 +135,11 @@ export default {
           filetype: this.file_store["type"],
           title: this.title,
           description: this.description
+        }).catch((err) => {
+          console.log("its joever");
+          const detail = err.response.data.detail;
+          this.alertMessage = detail;
+          this.showAlert = true;
         });
 
         console.log(this.file_store);
@@ -151,7 +170,10 @@ export default {
             }
             })
             .catch((error) => {
-            console.log(error);
+              console.log("its joever");
+              const detail = err.response.data.detail;
+              this.alertMessage = detail;
+              this.showAlert = true;
             })
 
         }
