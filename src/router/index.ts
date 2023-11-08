@@ -24,14 +24,14 @@ const router = createRouter({
       component: () => import('@/views/Test.vue')
     },
     {
-      path: '/test-socket',
-      name: 'test-socket',
-      component: () => import('@/views/Test3.vue')
-    },
-    {
       path: '/test2',
       name: 'test2',
       component: () => import('@/views/Test2.vue')
+    },
+    {
+      path: '/test3',
+      name: 'test3',
+      component: () => import('@/views/Test3.vue')
     },
     {
       path: '/signup',

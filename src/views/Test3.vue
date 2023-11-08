@@ -1,5 +1,10 @@
 <template>
   <div>
+  <div>
+    <v-btn @click="updateToDB">
+      Reset
+    </v-btn>
+  </div>
     <div v-for="(test, index) in tests" :key="index">
       <div :ref="index" class="flex items-center justify-center" style="border-radius:2px;">
           <div class="  p-6 " style="width: 30vw; padding-bottom: 50px;">
@@ -50,12 +55,15 @@ export default {
   data() {
     return {
       viewCount: 0,
-      initViewCount: 100,
+      initViewCount: {
+
+      },
       currentIndex: 0,
       currentIcon: "mdi-thumb-up-outline",
 
       tests: [
           {
+            // change id to file name
             id: 0,
             title: "cool",
             subtitle: "super cool",
@@ -73,37 +81,161 @@ export default {
           },
       
       ],
+      // index, count
+      update_videos: {},
 
     };
+    
   },
   methods: {
     // incrementViews() {
     //   this.socket.emit('incrementViews');
     // },
     incrementViewCount(index) {
+      // use video.id
       this.socket.emit('videoViewed', index)
+      // this.socket.on('updateViewCount', (videoId, viewCount, videos) => {
+
+      // console.log(videos)
+      // console.log(this.update_videos)
+      // this.update_videos = videos
+      // console.log(this.update_videos)
+      // videos = {}
+      // const video = this.tests.find((v) => v.id === videoId);
+      // if (video) {
+      //   video.viewCount = viewCount;
+      // }
+      // });
     },
-    async updateToDB(filename) {
-      await axios.post("/increment-video-view", {"filename": filename, "views": this.viewCount}).then(async res => {
-        console.log("update view completed");
-        await axios.post("/get_video_view", {"filename": filename}).then(res => {
-          this.initViewCount = res.data
-        })
-      })
-    }
+    reset() {
+      // console.log("WHAT HAPPEN")
+      const whatever = 0
+      // this.socket.emit('resetCount', whatever)
+
+      // console.log(this.tests)
+      console.log("running test function")
+      this.socket.emit('resetCount', whatever)
+
+      // this.socket.on('updateViewCount', (videos) => {
+      // console.log(videos)
+      // for (let index in videos ) {
+      //   console
+      //   const video = this.tests.find((v) => v.id === index);
+      //   video.viewCount += videos[index]
+      // }
+      // console.log("Update all the views!!!")
+
+      // const whatever = 0
+      // this.socket.emit('resetCount', whatever)
+
+
+
+
+
+      // console.log(videos)
+      // console.log(this.update_videos)
+      // this.update_videos = videos
+      // console.log(this.update_videos)
+      // videos = {}
+      // const video = this.tests.find((v) => v.id === videoId);
+      // if (video) {
+      //   video.viewCount = viewCount;
+      // }
+      // });
+    },
+    async updateToDB() {
+      console.log("update")
+      this.socket.on('updateViewCount', (videos) => {
+        this.update_videos = videos
+        // console.log(this.update_videos)
+      });
+
+      console.log(this.update_videos)
+      for (var index in this.update_videos) {
+        console.log(index)
+        var video = this.tests.find((v) => v.id === index);
+        if (video) {
+          video.viewCount = this.update_videos[index]
+        }
+      }
+      this.update_videos = {}
+      this.reset()
+      // this.socket.on('updateViewCount', (videoId, viewCount, videos) => {
+      // console.log(videoId)
+      // console.log(viewCount)
+      // console.log(videos)
+      // this.update_videos = videos
+      // const video = this.tests.find((v) => v.id === videoId);
+      // if (video) {
+      //   video.viewCount = viewCount;
+      //   }
+      // });
+
+      // for (var filename in this.update_videos) {
+      //   const viewCount = this.update_videos[filename]
+      //   await axios.post("/increment-video-view", {"filename": filename, "views": viewCount})
+      // }
+      // this.update_videos = {}
+
+      // this.socket.emit('resetCount')
+
+      // await axios.post("/increment-video-view", {"filename": filename, "views": this.viewCount}).then(async res => {
+      //   console.log("update view completed");
+      //   await axios.post("/get_video_view", {"filename": filename}).then(res => {
+      //     this.initViewCount = res.data
+      //   })
+      // })
+    },
+
   },
   mounted() {
+    // to call function every 5s
+    // var intervalId = setInterval(function() {
+    //   alert("Interval reached every 5s")
+    // }, 5000);
+
     this.socket = io('http://localhost:3030');
 
-    this.socket.on('updateViewCount', (videoId, viewCount, videos) => {
-      console.log(videoId)
-      console.log(viewCount)
-      console.log(videos)
-      const video = this.tests.find((v) => v.id === videoId);
-      if (video) {
-        video.viewCount = viewCount;
-      }
-    });
+
+    // var intervalId = setInterval(function() {
+
+    //   this.socket.on('updateViewCount', (videos) => {
+    //   console.log(videos)
+    //   for (let index in videos ) {
+    //     console.log(index)
+    //     const video = this.tests.find((v) => v.id === index);
+    //     if (video) {
+    //     video.viewCount += videos[index]
+    //     }
+    //   }
+    //   console.log("Update all the views!!!")
+
+    //   const whatever = 0
+    //   this.socket.emit('resetCount', whatever)
+    //   console.log("reset socket variable")
+
+    // });
+    // }, 5000);
+
+
+
+
+    // this.socket.on('updateViewCount', (videoId, viewCount, videos) => {
+
+    //   console.log(videos)
+    //   console.log(this.update_videos)
+    //   this.update_videos = videos
+    //   console.log(this.update_videos)
+    //   videos = {}
+    //   const video = this.tests.find((v) => v.id === videoId);
+    //   if (video) {
+    //     video.viewCount = viewCount;
+    //   }
+    // });
+
+
+    
+
 
     // this.socket.emit('getViews');
 
