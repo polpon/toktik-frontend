@@ -12,7 +12,7 @@
             >
             {{this.alertMessage}}
             </v-alert>
-            <v-form ref="form">
+            <v-form ref="form" @submit.prevent="submitFrom">
                 <v-text-field
                 width=""
                 clearable
@@ -40,7 +40,7 @@
                   @change="validate"
                   label="Choose a file"
                 ></v-file-input>
-                <v-btn type="submit" :disabled="!isFormValid" @click="submitFrom" color="primary" block class="mt-2">
+                <v-btn type="submit" :disabled="!isFormValid" color="primary" block class="mt-2">
                     Post
                 </v-btn>
                 <RouterLink
