@@ -185,7 +185,7 @@
         <div v-if="scrollToMyIndex"></div>
 
         <div style="overflow-y: auto;"  v-for="(content , index) in contents" :key="index">
-            <div :ref="index" class="flex items-center justify-center" style="border-radius:2px;">
+            <div :ref="index" class="flex items-center justify-center" style="border-radius:2px; ">
                 <div class="  p-6 " style="width: 30vw; padding-bottom: 50px;">
                     <div class="px-6 py-4">
                         <div class="font-bold text-xl mb-2">
@@ -196,9 +196,9 @@
                         </p>
                     </div>
 
-                    <div class="justify-center flex items-center justify-center" @click="handleClick(index, content, contents)">
+                    <div class="justify-center flex items-center justify-center" @click="handleClick(index, content, contents, $event)">
                         <div class="col-start-2 col-span-4 row-start-1 row-span-14 video-js-responsive-container" style="height: 70vh; position: relative;">
-                            <video-player ref="videoPlayer" :options="content.videoOptions" class="video-js" :key="content.thumbnail" v-observe-visibility="{
+                            <video-player ref="videoPlayer" :options="content.videoOptions" class="video-js vjs-big-play-centered" :key="content.thumbnail" v-observe-visibility="{
                                 callback: (isVisible, entry) => visibilityChanged(isVisible, entry, index),
                                 intersection: {
                                     threshold: 0.7,
@@ -207,13 +207,52 @@
                         </div>
                     <!-- <img v-bind:src="'https://toktik-s3-videos.sgp1.digitaloceanspaces.com/' + content.thumbnail + 'thumbnail.png'" class="w-1/2 place-content-center h-128"> this.$refs.videoPlayer[index].play() -->
                     </div>
+                </div>
+                <div style="display: flex; flex-direction: column; margin-top: 20%;">
+                    <div style=
+                        "background-color: #cccccc;
+                        width: 50px;
+                        height: 50px;
+                        border-radius: 50%;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;"
+                        @click="toggleLikeIcon(content)">
 
-                    <div class="px-6 py-4">
-                        <div style="background-color: grey; width: 60px; padding: 5px; border-radius: 10px; display: inline-block;" @click="toggleLikeIcon(content)">
-                            <v-icon :icon="currentIcon" style="padding-left: 5px;"/>
-                            <div style="width: 5px; display: inline-block;"></div>
-                            {{ content.likeCount }}
-                        </div>
+                        <v-icon :icon="currentIcon" color="black"/>
+                    </div>
+                    <div style="display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        margin-top: 5px;
+                        font-weight: bold;
+                        font-size: 12px;">
+
+                        {{ content.likeCount }}
+                    </div>
+
+                    <div style="margin: 5px;"></div>
+
+                    <div style=
+                        "background-color: #cccccc;
+                        width: 50px;
+                        height: 50px;
+                        border-radius: 50%;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;"
+                        @click="toggleLikeIcon(content)">
+
+                        <v-icon icon="mdi-message-text-outline" color="black"/>
+                    </div>
+                    <div style="display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        margin-top: 5px;
+                        font-weight: bold;
+                        font-size: 12px;">
+
+                        1000
                     </div>
                 </div>
             </div>
@@ -243,9 +282,10 @@ export default {
         currentScrollVideo: "",
         currentVideo: "",
         currentIndex: "",
+        forcePause: false,
         disableButtonUp: false,
         disableButtonDown: false,
-        currentIcon: "mdi-thumb-up-outline",
+        currentIcon: "mdi-heart-outline",
         time: "Feb. 8, 2022",
         comment_buttons: true,
         comments: [
@@ -258,9 +298,9 @@ export default {
     }),
     methods: {
         toggleLikeIcon(context) {
-            this.currentIcon = this.currentIcon === "mdi-thumb-up-outline" ? "mdi-thumb-up" : "mdi-thumb-up-outline";
+            this.currentIcon = this.currentIcon === "mdi-heart-outline" ? "mdi-heart" : "mdi-heart-outline";
 
-            context.likeCount = this.currentIcon === "mdi-thumb-up" ? context.likeCount + 1 : context.likeCount - 1;
+            context.likeCount = this.currentIcon === "mdi-heart" ? context.likeCount + 1 : context.likeCount - 1;
 
             updateLike(context.likeCount);
         },
@@ -302,12 +342,25 @@ export default {
             const player = this.$refs.videoPlayer[index].getPlayer();
             this.isVisible = isVisible
             // console.log(isVisible)
-            isVisible ? player.play() : player.pause();
+            if (!this.$refs.videoPlayer[index].getClientPause()) {
+                isVisible ? player.play() : player.pause();
+            }
         },
-        handleClick(index, content, contents) {
+        handleClick(index, content, contents, event) {
+            // console.log(event.target.className)
+
             const player = this.$refs.videoPlayer[index].getPlayer();
 
-            this.openDialog(index, content, contents, player.currentTime());
+            if (event.target.className === "vjs-icon-placeholder")
+            {
+                // Pause
+                this.$refs.videoPlayer[index].toggleClientPause();
+                console.log(this.$refs.videoPlayer[index].getClientPause())
+            }
+            else
+            {
+                this.openDialog(index, content, contents, player.currentTime());
+            }
         },
         trigger_comment() {
             this.comment_buttons = true

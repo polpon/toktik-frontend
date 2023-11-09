@@ -29,7 +29,7 @@ props: {
         default: true
     }
 },
-expose: ['play', 'pause', 'test', 'getPlayer'],
+expose: ['play', 'pause', 'test', 'getPlayer', 'getClientPause', 'toggleClientPause', 'setClientPause'],
 methods: {
     test(){
         console.log("bangers")
@@ -46,10 +46,20 @@ methods: {
     },
     getPlayer() {
         return this.player;
+    },
+    getClientPause() {
+        return this.forcePause;
+    },
+    toggleClientPause() {
+        this.forcePause = this.player.paused();
+    },
+    setClientPause(value) {
+        this.forcePause = value;
     }
 },
 data() {
     return {
+    forcePause: false,
     player: null,
     localOptions: {} // Create a local copy of options
     }
