@@ -37,7 +37,7 @@ const router = createRouter({
       path: '/signup',
       name: 'signup',
       component: () => import('@/views/SignUp.vue'),
-      meta: { checkAuth: true }
+      // meta: { checkAuth: true }
     },
 
     {
@@ -62,14 +62,16 @@ const router = createRouter({
 })
 
 export async function isAuthenticated() {
-  const customAxiosRequestConfig: CustomAxiosRequestConfig = { skipAuthRefresh: true };
+  // const customAxiosRequestConfig: CustomAxiosRequestConfig = { skipAuthRefresh: true };
 
-  return await axios.get('/whoami', customAxiosRequestConfig)
+  return await axios.get('/whoami')
     .then(resp => { return resp.status == 200})
     .catch(err => false)
 }
+
 export async function getData() {
-  await axios.get('/whoami')
+  const customAxiosRequestConfig: CustomAxiosRequestConfig = { skipAuthRefresh: true };
+  await axios.get('/whoami', customAxiosRequestConfig)
     .then(resp => {
       const username = resp.data.username
       const videos: Array<string> = resp.data.videos
@@ -98,7 +100,7 @@ router.beforeEach(async (to, from, next) => {
   {
     if (await isAuthenticated()){
       store.commit('login')
-      next('/');
+      next();
 
     } else {
       store.commit('logout')

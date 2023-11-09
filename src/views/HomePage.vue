@@ -184,80 +184,106 @@
     <div v-if="dialog == false" class="comment-list" style="height: 100%; overflow-y: auto;">
         <div v-if="scrollToMyIndex"></div>
 
-        <div style="overflow-y: auto;"  v-for="(content , index) in contents" :key="index">
-            <div :ref="index" class="flex items-center justify-center" style="border-radius:2px; ">
-                <div class="  p-6 " style="width: 30vw; padding-bottom: 50px;">
-                    <div class="px-6 py-4">
-                        <div class="font-bold text-xl mb-2">
-                            {{ content.title }}
+            <div v-for="(content , index) in contents" :key="index">
+                <div :ref="index" class="flex items-center justify-center" style="border-radius:2px; ">
+                    <div class="  p-6 " style="width: 30vw; padding-bottom: 50px;">
+                        <div class="px-6 py-4">
+                            {{ content.thumbnail }}
+                            <div class="font-bold text-xl mb-2">
+                                {{ content.title }}
+                            </div>
+                            <p class="text-slate-300 text-base">
+                                {{ content.subtitle }}
+                            </p>
                         </div>
-                        <p class="text-slate-300 text-base">
-                            {{ content.subtitle }}
-                        </p>
-                    </div>
 
-                    <div class="justify-center flex items-center justify-center" @click="handleClick(index, content, contents, $event)">
-                        <div class="col-start-2 col-span-4 row-start-1 row-span-14 video-js-responsive-container" style="height: 70vh; position: relative;">
-                            <video-player ref="videoPlayer" :options="content.videoOptions" class="video-js vjs-big-play-centered" :key="content.thumbnail" v-observe-visibility="{
-                                callback: (isVisible, entry) => visibilityChanged(isVisible, entry, index),
+                        <div class="justify-center flex items-center justify-center" v-element-visibility="onElementVisibility" @click="handleClick(index, content, contents, $event)">
+                            <div class="col-start-2 col-span-4 row-start-1 row-span-14 video-js-responsive-container" style="height: 70vh; position: relative;"
+                                v-observe-visibility="{
+                                callback: (isVisible, entry) => visibilityChanged(isVisible, entry, index, content),
                                 intersection: {
-                                    threshold: 0.7,
+                                    threshold: 0.6,
                                 },
-                                }"/>
+                                }">
+                                <video-player ref="videoPlayer" :options="content.videoOptions" class="video-js vjs-big-play-centered" :key="content.thumbnail" />
+                            </div>
+                        <!-- <img v-bind:src="'https://toktik-s3-videos.sgp1.digitaloceanspaces.com/' + content.thumbnail + 'thumbnail.png'" class="w-1/2 place-content-center h-128"> this.$refs.videoPlayer[index].play() -->
                         </div>
-                    <!-- <img v-bind:src="'https://toktik-s3-videos.sgp1.digitaloceanspaces.com/' + content.thumbnail + 'thumbnail.png'" class="w-1/2 place-content-center h-128"> this.$refs.videoPlayer[index].play() -->
                     </div>
-                </div>
-                <div style="display: flex; flex-direction: column; margin-top: 20%;">
-                    <div style=
-                        "background-color: #cccccc;
-                        width: 50px;
-                        height: 50px;
-                        border-radius: 50%;
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;"
-                        @click="toggleLikeIcon(content)">
+                    <div style="display: flex; flex-direction: column; margin-top: 20%;">
+                        <div style=
+                            "background-color: #cccccc;
+                            width: 50px;
+                            height: 50px;
+                            border-radius: 50%;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;"
+                            @click="toggleLikeIcon(content)">
 
-                        <v-icon :icon="currentIcon" color="black"/>
-                    </div>
-                    <div style="display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        margin-top: 5px;
-                        font-weight: bold;
-                        font-size: 12px;">
+                            <v-icon :icon="currentIcon" color="black"/>
+                        </div>
+                        <div style="display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            margin-top: 5px;
+                            font-weight: bold;
+                            font-size: 12px;">
 
-                        {{ content.likeCount }}
-                    </div>
+                            {{ content.likeCount }}
+                        </div>
 
-                    <div style="margin: 5px;"></div>
+                        <div style="margin: 5px;"></div>
 
-                    <div style=
-                        "background-color: #cccccc;
-                        width: 50px;
-                        height: 50px;
-                        border-radius: 50%;
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;"
-                        @click="toggleLikeIcon(content)">
+                        <div style=
+                            "background-color: #cccccc;
+                            width: 50px;
+                            height: 50px;
+                            border-radius: 50%;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;"
+                            @click="toggleLikeIcon(content)">
 
-                        <v-icon icon="mdi-message-text-outline" color="black"/>
-                    </div>
-                    <div style="display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        margin-top: 5px;
-                        font-weight: bold;
-                        font-size: 12px;">
+                            <v-icon icon="mdi-message-text-outline" color="black"/>
+                        </div>
+                        <div style="display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            margin-top: 5px;
+                            font-weight: bold;
+                            font-size: 12px;">
 
-                        1000
+                            1000
+                        </div>
+
+                        <div style="margin: 5px;"></div>
+
+                        <div style=
+                            "background-color: #cccccc;
+                            width: 50px;
+                            height: 50px;
+                            border-radius: 50%;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;"
+                            @click="toggleLikeIcon(content)">
+
+                            <v-icon icon="mdi-poll" color="black"/>
+                        </div>
+                        <div style="display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            margin-top: 5px;
+                            font-weight: bold;
+                            font-size: 12px;">
+
+                            {{ content.views }}
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <InfiniteLoading @infinite="infiniteHandler" />
+        <InfiniteLoading @infinite="infiniteHandler" :distance="700" />
     </div>
 </template>
 
@@ -268,10 +294,17 @@ import VideoPlayer from '@/components/VideoPlayer.vue';
 import InfiniteLoading from "v3-infinite-loading";
 import "v3-infinite-loading/lib/style.css";
 import debounce from 'lodash.debounce';
+import { state, socket, setSocket } from "@/socket";
 
 const updateLike = debounce((like) => {
     console.log(like)
 }, 1000)
+
+
+const playdebouncer = debounce((player) => {
+    player.play();
+}, 2000)
+
 
 export default {
     components: {Sidebar, VideoPlayer, InfiniteLoading},
@@ -304,10 +337,10 @@ export default {
 
             updateLike(context.likeCount);
         },
-        infiniteHandler($state) {
+        async infiniteHandler($state) {
             console.log("loading...");
 
-            axios.post("/get_random_video").then(res => {
+            await axios.post("/get_random_video").then(res => {
                 console.log(res);
                 for (let each in res.data) {
                     const content = {
@@ -315,6 +348,7 @@ export default {
                         subtitle: res.data[each].description,
                         thumbnail: res.data[each].uuid,
                         owner: res.data[each].owner_uuid,
+                        views: res.data[each].view_count,
                         startAt: 0,
                         likeCount: 0,
                         videoOptions: {
@@ -324,7 +358,7 @@ export default {
                             responsive: true,
                             fluid: true,
                             fill: true,
-                            preload: 'auto',
+                            preload: 'none',
                             poster: `/api/static/${res.data[each].uuid}/thumbnail.png`,
                             sources: [
                             {
@@ -338,12 +372,25 @@ export default {
                 }
             })
         },
-        visibilityChanged (isVisible, entry, index) {
-            const player = this.$refs.videoPlayer[index].getPlayer();
-            this.isVisible = isVisible
+        visibilityChanged(isVisible, entry, index, context) {
+            const player = this.$refs.videoPlayer[index];
+
+            console.log("Visibility:", context.thumbnail, isVisible)
+
+            if (isVisible) {
+                console.log("Listening to:", context.thumbnail)
+                socket.on(context.thumbnail, (views) => {
+                    console.log(context.thumbnail, views);
+                    context.views = views;
+                });
+            } else {
+                console.log("Not listening to:", context.thumbnail)
+                socket.off(context.thumbnail);
+            }
+
             // console.log(isVisible)
             if (!this.$refs.videoPlayer[index].getClientPause()) {
-                isVisible ? player.play() : player.pause();
+                isVisible ? playdebouncer(player) : player.pause();
             }
         },
         handleClick(index, content, contents, event) {

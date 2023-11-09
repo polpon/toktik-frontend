@@ -211,8 +211,6 @@ export default {
     //   alert("Interval reached every 5s")
     // }, 5000);
 
-    this.socket = io('http://localhost:3030');
-
 
     // var intervalId = setInterval(function() {
 
