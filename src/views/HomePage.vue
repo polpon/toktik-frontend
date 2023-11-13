@@ -22,203 +22,114 @@
                         <v-icon icon="mdi-arrow-down-bold-circle" size=300%></v-icon>
                     </v-btn>
                 </div>
-
-
-
             </div>
 
-        <v-card style="width: 30%;
-                height: 100%;">
-                <!-- <article class="p-6 text-base bg-white" style="max-height: 25vh;  overflow: auto;"> -->
-                <article class="p-6 text-base bg-white" style="min-height: 100vh;  overflow: auto;">
-                    <footer class="flex justify-between items-center mb-2">
-                        <div class="flex items-center text-xl">
-                            <p class="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold">
-                                <img
-                                    class="mr-2 w-12 h-12 rounded-full"
-                                    src="https://flowbite.com/docs/images/people/profile-picture-2.jpg"
-                                    >
-                            </p>
+            <div style="
+            display: flex;
+            flex-direction: column;
+            width: 30%;
+            height: 100%;"
+            >
+                <div style="
+                    background-color: white;">
+                    <article class="p-6 text-base bg-white" style="min-height: 25vh;  overflow: auto;">
+                        <footer class="flex justify-between items-center mb-2">
+                            <div class="flex items-center text-xl">
+                                <p class="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold">
+                                    <img
+                                        class="mr-2 w-12 h-12 rounded-full"
+                                        src="https://flowbite.com/docs/images/people/profile-picture-2.jpg"
+                                        >
+                                </p>
 
-                            <p>
-                                {{ this.currentVideo.owner }}
-                            </p>
-                            <p class="text-base text-gray-500" style="padding: 10px; padding-left: 40px;">
-                                <time pubdate datetime="2022-02-08"
-                                    title="February 8th, 2022">
-                                    {{ this.time }}
-                                </time>
-                            </p>
+                                <p>
+                                    {{ this.currentVideo.owner }}
+                                </p>
+                                <p class="text-base text-gray-500" style="padding: 10px; padding-left: 40px;">
+                                    <time pubdate datetime="2022-02-08"
+                                        title="February 8th, 2022">
+                                        {{ this.time }}
+                                    </time>
+                                </p>
+                            </div>
+                        </footer>
+
+                        <div>
+                            <h1 class="text-xl" style="padding-top: 18px;">
+                            Title: {{ this.currentVideo.title }}
+                            </h1>
+
+                        <p class="text-base" style="padding-top: 18px;">
+                            Description: {{ this.currentVideo.subtitle }}
+                        </p>
                         </div>
-                            <!-- <button data-dropdown-toggle="dropdownDotsHorizontal"
-                            class="inline-flex
-                                items-center
-                                p-2 text-sm
-                                font-medium
-                                text-center
-                                text-gray-900
-                                bg-white
-                                rounded-lg
-                                hover:bg-gray-100
-                                focus:ring-4
-                                focus:outline-none
-                                dark:text-white
-                                focus:ring-gray-50
-                                dark:bg-gray-800
-                                dark:hover:bg-gray-700
-                                dark:focus:ring-gray-600"
-                            type="button">
-                            <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 3">
-                                <path d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z"/>
-                            </svg>
 
-                            <v-menu activator="parent">
-                            <v-list>
-                                <v-list-item
-                                v-for="item in itemMenus"
-                                :key="item"
-                                >
-                                <v-list-item-title>
-                                <v-btn variant="flat"
-                                >
-                                {{ item.title }}
-                                </v-btn>
+                        <div style="
+                            border: 2px solid grey;
+                            width: 60px;
+                            padding: 5px;
+                            margin-top: 15px;
+                            border-radius: 10px;
+                            display: inline-block;" @click="toggleLikeIcon(this.currentVideo)">
+                            <v-icon v-if="this.currentVideo.userLiked" icon="mdi-heart" style="padding-left: 5px;" color="red"/>
+                            <v-icon v-else icon="mdi-heart-outline" style="padding-left: 5px;"/>
 
+                            <div style="width: 5px; display: inline-block;"></div>
+                            {{ this.currentVideo.likeCount }}
+                        </div>
 
-                                </v-list-item-title>
-                                </v-list-item>
-                            </v-list>
-                            </v-menu>
-                        </button> -->
-
-                    </footer>
-
-                    <div>
-                        <h1 class="text-xl" style="padding-top: 18px;">
-                        Title: {{ this.currentVideo.title }}
-                        </h1>
-
-                    <p class="text-base" style="padding-top: 18px;">
-                        Description: {{ this.currentVideo.subtitle }}
-                    </p>
-                    </div>
-
-                    <div style="
-                        border: 2px solid grey;
-                        width: 60px;
-                        padding: 5px;
-                        margin-top: 15px;
-                        border-radius: 10px;
-                        display: inline-block;" @click="toggleLikeIcon(this.currentVideo)">
-                        <v-icon v-if="this.currentVideo.userLiked" icon="mdi-heart" style="padding-left: 5px;" color="red"/>
-                        <v-icon v-else icon="mdi-heart-outline" style="padding-left: 5px;"/>
-                        <!-- <v-icon :icon="currentIcon" style="padding-left: 5px;"/> -->
-                        <div style="width: 5px; display: inline-block;"></div>
-                        {{ this.currentVideo.likeCount }}
-                    </div>
-
-                    <div style="
-                        border: 2px solid grey;
-                        width: 60px;
-                        padding: 5px;
-                        margin-top: 15px;
-                        margin-left: 13px;
-                        border-radius: 10px;
-                        display: inline-block;" @click="toggleLikeIcon(this.currentVideo)">
-                        <v-icon icon="mdi-poll" color="black"/>
-                        <!-- <v-icon :icon="currentIcon" style="padding-left: 5px;"/> -->
-                        {{ this.currentVideo.views }}
-                    </div>
-
-
-                    <!-- <div style=
-                            "background-color: #cccccc;
-                            width: 50px;
-                            height: 50px;
-                            border-radius: 50%;
-                            display: flex;
-                            justify-content: center;
-                            align-items: center;"
-                            @click="toggleLikeIcon(content)">
-
+                        <div style="
+                            border: 2px solid grey;
+                            width: 60px;
+                            padding: 5px;
+                            margin-top: 15px;
+                            margin-left: 13px;
+                            border-radius: 10px;
+                            display: inline-block;" @click="toggleLikeIcon(this.currentVideo)">
                             <v-icon icon="mdi-poll" color="black"/>
+
+                            {{ this.currentVideo.views }}
                         </div>
-                        <div style="display: flex;
-                            justify-content: center;
+                    </article>
+
+                    <v-divider class="border-opacity-75"></v-divider>
+                </div>
+                <div class="bg-white" style="overflow-y: auto;">
+                    <div v-for="comment in comments" :key="comment.id">
+                        <div class="flex block" style="
+                        border: 1px solid rgb(196, 196, 196);
+                        border-radius: 5%;
+                        margin: 24px;
+                        margin-bottom: 0%;
+                        padding: 15px;
+                        flex-direction: column;"
+                        >
+                            <div class="flex block" style="
+                            display: flex;
                             align-items: center;
-                            margin-top: 5px;
                             font-weight: bold;
-                            font-size: 12px;">
-
-                            {{ content.views }}
-                        </div> -->
-
-                </article>
-                <!-- <v-divider class="border-opacity-0"></v-divider> -->
-
-            <!-- <div class="bg-white" style="height: 40px"> -->
-            <!-- <v-btn variant="text"
-                @click="trigger_comment"
-                style="width: 100%;
-                height: 100%;">
-                    Comments
-                </v-btn>
-                <v-btn variant="text"
-                @click="trigger_video"
-                style="width: 50%;
-                height: 100%;">
-                    relate video
-                </v-btn>
-            </div> -->
-
-            <!-- <v-divider class="border-opacity-75"></v-divider> -->
-
-
-
-                <!-- TODO add if-else stagement -->
-                <!-- <div>
-                    No comments to display.
-                </div>  -->
-
-
-            <!-- <div v-if="this.comment_buttons" class="comment-list bg-white" style="height: 100vh; overflow-y: auto;">
-                <v-infinite-scroll overflow-auto :height="300" :items="items" :onLoad="get_videos">
-                    <div style="overflow-y: auto;"  v-for="comment in comments" :key="comment">
-                        <div class="flex block" style="padding-top: 10px; padding-left: 10px;">
-                            <img src="/src/assets/toktik.png" style="height: 55px; width: 70px; padding-left: 10px; padding-right: 10px; padding-top: 5px;">
-                            <div>
+                            font-size: 15px;
+                            margin-bottom: 10px;"
+                            >
+                                <img src="/src/assets/toktik.png" style="height: 35px; padding-right: 10px; padding-top: 5px;">
                                 {{ comment.username }}
-                                <p class="break-all" style="padding-right: 55px;">{{ comment.comment }}</p>
+                            </div>
+                            <div>
+                                <p class="break-all" style="">{{ comment.comment }}</p>
                             </div>
                         </div>
                     </div>
-                </v-infinite-scroll>
-            </div> -->
-
-            <!-- <div class="comment-list bg-white" style="height: 72vh; overflow-y: auto;">
-                <v-infinite-scroll overflow-auto :height="200" :items="items">
-                    <v-row>
-                    <v-col
-                        v-for="(content, index) in contents"
-                        :key="index"
-                        cols="12"
-                        sm="6"
-                        md="4"
-                        lg="4"
-                        style="padding: 10px;"
-                    >
-                        <v-card  @click="openVideoInRelateVideo(content.thumbnail, index)" style="width: 100%; max-width: 300px; height: 220px; background-color: black; display: flex; align-items: center; justify-content: center;">
-                            <v-img :src="'https://toktik-s3-videos.sgp1.digitaloceanspaces.com/' + content.thumbnail + 'thumbnail.png'" aspect-ratio="3/4" style="max-width: 100%; max-height: 100%;"></v-img>
-                        </v-card>
-                    </v-col>
-
-                    </v-row>
-                </v-infinite-scroll>
-                </div> -->
-
-        </v-card>
+                    <InfiniteLoading @infinite="infiniteCommentHandler" :distance="700">
+                        <template v-slot:spinner>
+                            <div style="margin: 24px;"></div>
+                        </template>
+                    </InfiniteLoading>
+                </div>
+            </div>
         </div>
     </div>
+
+
 
 
     <Sidebar v-if="dialog == false"/>
@@ -229,108 +140,108 @@
     <div v-if="dialog == false" class="comment-list" style="height: 100%; overflow-y: auto;">
         <div v-if="scrollToMyIndex"></div>
 
-            <div v-for="(content , index) in contents" :key="index">
-                <div :ref="index" class="flex items-center justify-center" style="border-radius:2px; ">
-                    <div class="  p-6 " style="width: 30vw; padding-bottom: 50px;">
-                        <div class="px-6 py-4">
-                            {{ content.thumbnail }}
-                            <div class="font-bold text-xl mb-2">
-                                {{ content.title }}
-                            </div>
-                            <p class="text-slate-300 text-base">
-                                {{ content.subtitle }}
-                            </p>
+        <div v-for="(content , index) in contents" :key="index">
+            <div :ref="index" class="flex items-center justify-center" style="border-radius:2px; ">
+                <div class="  p-6 " style="width: 30vw; padding-bottom: 50px;">
+                    <div class="px-6 py-4">
+                        {{ content.thumbnail }}
+                        <div class="font-bold text-xl mb-2">
+                            {{ content.title }}
                         </div>
-
-                        <div class="justify-center flex items-center justify-center" v-element-visibility="onElementVisibility" @click="handleClick(index, content, contents, $event)">
-                            <div class="col-start-2 col-span-4 row-start-1 row-span-14 video-js-responsive-container" style="height: 70vh; position: relative;"
-                                v-observe-visibility="{
-                                callback: (isVisible, entry) => visibilityChanged(isVisible, entry, index, content),
-                                intersection: {
-                                    threshold: 0.6,
-                                },
-                                }">
-                                <video-player ref="videoPlayer" :options="content.videoOptions" class="video-js vjs-big-play-centered" :key="content.thumbnail" />
-                            </div>
-                        <!-- <img v-bind:src="'https://toktik-s3-videos.sgp1.digitaloceanspaces.com/' + content.thumbnail + 'thumbnail.png'" class="w-1/2 place-content-center h-128"> this.$refs.videoPlayer[index].play() -->
-                        </div>
+                        <p class="text-slate-300 text-base">
+                            {{ content.subtitle }}
+                        </p>
                     </div>
-                    <div style="display: flex; flex-direction: column; margin-top: 20%;">
-                        <div style=
-                            "background-color: #cccccc;
-                            width: 50px;
-                            height: 50px;
-                            border-radius: 50%;
-                            display: flex;
-                            justify-content: center;
-                            align-items: center;"
-                            @click="toggleLikeIcon(content)">
 
-                            <v-icon v-if="content.userLiked" icon="mdi-heart" color="black"/>
-                            <v-icon v-else icon="mdi-heart-outline" color="black"/>
-                            <!-- <v-icon :icon="currentIcon" color="black"/> -->
+                    <div class="justify-center flex items-center justify-center" v-element-visibility="onElementVisibility" @click="handleClick(index, content, contents, $event)">
+                        <div class="col-start-2 col-span-4 row-start-1 row-span-14 video-js-responsive-container" style="height: 70vh; position: relative;"
+                            v-observe-visibility="{
+                            callback: (isVisible, entry) => visibilityChanged(isVisible, entry, index, content),
+                            intersection: {
+                                threshold: 0.6,
+                            },
+                            }">
+                            <video-player ref="videoPlayer" :options="content.videoOptions" class="video-js vjs-big-play-centered" :key="content.thumbnail" />
                         </div>
-                        <div style="display: flex;
-                            justify-content: center;
-                            align-items: center;
-                            margin-top: 5px;
-                            font-weight: bold;
-                            font-size: 12px;">
+                    <!-- <img v-bind:src="'https://toktik-s3-videos.sgp1.digitaloceanspaces.com/' + content.thumbnail + 'thumbnail.png'" class="w-1/2 place-content-center h-128"> this.$refs.videoPlayer[index].play() -->
+                    </div>
+                </div>
+                <div style="display: flex; flex-direction: column; margin-top: 20%;">
+                    <div style=
+                        "background-color: #cccccc;
+                        width: 50px;
+                        height: 50px;
+                        border-radius: 50%;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;"
+                        @click="toggleLikeIcon(content)">
 
-                            {{ content.likeCount }}
-                        </div>
+                        <v-icon v-if="content.userLiked" icon="mdi-heart" color="red"/>
+                        <v-icon v-else icon="mdi-heart-outline" color="black"/>
+                        <!-- <v-icon :icon="currentIcon" color="black"/> -->
+                    </div>
+                    <div style="display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        margin-top: 5px;
+                        font-weight: bold;
+                        font-size: 12px;">
 
-                        <div style="margin: 5px;"></div>
+                        {{ content.likeCount }}
+                    </div>
 
-                        <div style=
-                            "background-color: #cccccc;
-                            width: 50px;
-                            height: 50px;
-                            border-radius: 50%;
-                            display: flex;
-                            justify-content: center;
-                            align-items: center;"
-                            @click="toggleLikeIcon(content)">
+                    <div style="margin: 5px;"></div>
 
-                            <v-icon icon="mdi-message-text-outline" color="black"/>
-                        </div>
-                        <div style="display: flex;
-                            justify-content: center;
-                            align-items: center;
-                            margin-top: 5px;
-                            font-weight: bold;
-                            font-size: 12px;">
+                    <div style=
+                        "background-color: #cccccc;
+                        width: 50px;
+                        height: 50px;
+                        border-radius: 50%;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;"
+                        @click="toggleLikeIcon(content)">
 
-                            1000
-                        </div>
+                        <v-icon icon="mdi-message-text-outline" color="black"/>
+                    </div>
+                    <div style="display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        margin-top: 5px;
+                        font-weight: bold;
+                        font-size: 12px;">
 
-                        <div style="margin: 5px;"></div>
+                        1000
+                    </div>
 
-                        <div style=
-                            "background-color: #cccccc;
-                            width: 50px;
-                            height: 50px;
-                            border-radius: 50%;
-                            display: flex;
-                            justify-content: center;
-                            align-items: center;"
-                            @click="toggleLikeIcon(content)">
+                    <div style="margin: 5px;"></div>
 
-                            <v-icon icon="mdi-poll" color="black"/>
-                        </div>
-                        <div style="display: flex;
-                            justify-content: center;
-                            align-items: center;
-                            margin-top: 5px;
-                            font-weight: bold;
-                            font-size: 12px;">
+                    <div style=
+                        "background-color: #cccccc;
+                        width: 50px;
+                        height: 50px;
+                        border-radius: 50%;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;"
+                        @click="toggleLikeIcon(content)">
 
-                            {{ content.views }}
-                        </div>
+                        <v-icon icon="mdi-poll" color="black"/>
+                    </div>
+                    <div style="display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        margin-top: 5px;
+                        font-weight: bold;
+                        font-size: 12px;">
+
+                        {{ content.views }}
                     </div>
                 </div>
             </div>
-        <InfiniteLoading @infinite="infiniteHandler" :distance="700" />
+        </div>
+        <InfiniteLoading @infinite="infiniteVideoHandler" :distance="700" />
     </div>
 </template>
 
@@ -341,7 +252,7 @@ import VideoPlayer from '@/components/VideoPlayer.vue';
 import InfiniteLoading from "v3-infinite-loading";
 import "v3-infinite-loading/lib/style.css";
 import debounce from 'lodash.debounce';
-import { state, socket, setSocket } from "@/socket";
+import { socket } from "@/socket";
 
 const updateLike = debounce((like, name) => {
     console.log("Updated like to :", name)
@@ -375,14 +286,33 @@ export default {
         comment_buttons: true,
         comments: [
             {
+                id: 1,
                 username: "Andrew Alfred",
+                comment: 'This is super coolas doask;djs;ka kq;lwj dqwkdpoajkck;asjdk;ajsdkjaskldjaklsdjsaldksajkldasjdklasjdalksjdskdjaksldjasdjaksllk;dhf wabkufhbew;fblsadasdasdass ad;ljbjhfk asdh;fudasjfl;kasdfj ialsdfjfklasdfk;sdjflaskd;fasdklfklasdjfksjf;kasjfsjadfjsadfjsdlkfjakdsl',
+                time: "2 min"
+            },
+            {
+                id: 2,
+                username: "Andrew 2Alfred",
+                comment: 'This is super coolas doask;djs;ka kq;lwj dqwkdpoajkck;asjdk;ajsdkjaskldjaklsdjsaldksajkldasjdklasjdalksjdskdjaksldjasdjaksllk;dhf wabkufhbew;fblsadasdasdass ad;ljbjhfk asdh;fudasjfl;kasdfj ialsdfjfklasdfk;sdjflaskd;fasdklfklasdjfksjf;kasjfsjadfjsadfjsdlkfjakdsl',
+                time: "2 min"
+            },
+            {
+                id: 3,
+                username: "Andrew 3Alfred",
+                comment: 'This is super coolas doask;djs;ka kq;lwj dqwkdpoajkck;asjdk;ajsdkjaskldjaklsdjsaldksajkldasjdklasjdalksjdskdjaksldjasdjaksllk;dhf wabkufhbew;fblsadasdasdass ad;ljbjhfk asdh;fudasjfl;kasdfj ialsdfjfklasdfk;sdjflaskd;fasdklfklasdjfksjf;kasjfsjadfjsadfjsdlkfjakdsl',
+                time: "2 min"
+            },
+            {
+                id: 4,
+                username: "Andrew 4Alfred",
                 comment: 'This is super coolas doask;djs;ka kq;lwj dqwkdpoajkck;asjdk;ajsdkjaskldjaklsdjsaldksajkldasjdklasjdalksjdskdjaksldjasdjaksllk;dhf wabkufhbew;fblsadasdasdass ad;ljbjhfk asdh;fudasjfl;kasdfj ialsdfjfklasdfk;sdjflaskd;fasdklfklasdjfksjf;kasjfsjadfjsadfjsdlkfjakdsl',
                 time: "2 min"
             },
         ],
     }),
     methods: {
-        async infiniteHandler($state) {
+        async infiniteVideoHandler($state) {
             console.log("loading...");
 
             await axios.post("/get_random_video").then(async res => {
@@ -417,6 +347,11 @@ export default {
                     this.contents.push(content)
                 }
             })
+        },
+        async infiniteCommentHandler($state) {
+            console.log("loading...");
+
+
         },
         toggleLikeIcon(context) {
             context.userLiked = context.userLiked ? false : true;
