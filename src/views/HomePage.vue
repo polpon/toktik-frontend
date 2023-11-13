@@ -3,7 +3,7 @@
         <div class="flex flex-row h-screen hover:flex-row">
             <div class="flex justify-center grid grid-cols-6 grid-rows-14 gap-4" style="width: 70%; height: 100%;">
                 <div class="row-start-1 col-start-1 place-self-center" style="height: 100% width: 50%;">
-                    <v-btn @click="closeDialog" variant="text" icon style="height: 100% width: 50%;">
+                    <v-btn @click="closeDialog(this.currentVideo)" variant="text" icon style="height: 100% width: 50%;">
                         <v-icon icon="mdi-alpha-x-circle" size=300%></v-icon>
                     </v-btn>
                 </div>
@@ -103,11 +103,56 @@
                     </p>
                     </div>
 
-                    <div style="border: 2px solid grey; width: 60px; padding: 5px; margin-top: 15px;border-radius: 10px; display: inline-block;" @click="toggleLikeIcon(this.currentVideo)">
-                        <v-icon :icon="currentIcon" style="padding-left: 5px;"/>
+                    <div style="
+                        border: 2px solid grey;
+                        width: 60px;
+                        padding: 5px;
+                        margin-top: 15px;
+                        border-radius: 10px;
+                        display: inline-block;" @click="toggleLikeIcon(this.currentVideo)">
+                        <v-icon v-if="this.currentVideo.userLiked" icon="mdi-heart" style="padding-left: 5px;" color="red"/>
+                        <v-icon v-else icon="mdi-heart-outline" style="padding-left: 5px;"/>
+                        <!-- <v-icon :icon="currentIcon" style="padding-left: 5px;"/> -->
                         <div style="width: 5px; display: inline-block;"></div>
                         {{ this.currentVideo.likeCount }}
                     </div>
+
+                    <div style="
+                        border: 2px solid grey;
+                        width: 60px;
+                        padding: 5px;
+                        margin-top: 15px;
+                        margin-left: 13px;
+                        border-radius: 10px;
+                        display: inline-block;" @click="toggleLikeIcon(this.currentVideo)">
+                        <v-icon icon="mdi-poll" color="black"/>
+                        <!-- <v-icon :icon="currentIcon" style="padding-left: 5px;"/> -->
+                        {{ this.currentVideo.views }}
+                    </div>
+
+
+                    <!-- <div style=
+                            "background-color: #cccccc;
+                            width: 50px;
+                            height: 50px;
+                            border-radius: 50%;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;"
+                            @click="toggleLikeIcon(content)">
+
+                            <v-icon icon="mdi-poll" color="black"/>
+                        </div>
+                        <div style="display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            margin-top: 5px;
+                            font-weight: bold;
+                            font-size: 12px;">
+
+                            {{ content.views }}
+                        </div> -->
+
                 </article>
                 <!-- <v-divider class="border-opacity-0"></v-divider> -->
 
@@ -326,7 +371,6 @@ export default {
         forcePause: false,
         disableButtonUp: false,
         disableButtonDown: false,
-        currentIcon: "mdi-heart-outline",
         time: "Feb. 8, 2022",
         comment_buttons: true,
         comments: [
@@ -381,6 +425,30 @@ export default {
 
             updateLike(context.userLiked, context.thumbnail);
         },
+        toggleVideoSocket(fromContext, toContext) {
+            // Open new socket, close old one
+
+            // Opening New Socket
+            let videoLike = "getVideoLike";
+
+            console.log("Listening to:", toContext.thumbnail)
+            socket.on(toContext.thumbnail, (views) => {
+                console.log(toContext.thumbnail, views);
+                toContext.views = views;
+            });
+
+            console.log("Listening to:", videoLike.concat(toContext.thumbnail))
+            socket.on(videoLike.concat(toContext.thumbnail), (views) => {
+                console.log(toContext.thumbnail, views);
+                toContext.views = views;
+            });
+
+            // Close Old Socket
+            console.log("Not listening to:", fromContext.thumbnail)
+            console.log("Not listening to:", videoLike.concat(fromContext.thumbnail))
+            socket.off(fromContext.thumbnail);
+            socket.off(videoLike.concat(fromContext.thumbnail))
+        },
         visibilityChanged(isVisible, entry, index, context) {
             const player = this.$refs.videoPlayer[index];
 
@@ -434,29 +502,41 @@ export default {
             this.comment_buttons = false
         },
         openDialog(index, context, contents, curTime = 0) {
-        context.startAt = curTime;
-        this.dialog = true;
-        this.$route.meta.hideNavbar = this.dialog;
-        this.currentVideo = context
-        // console.log(this.currentVideo)
-        this.currentScrollVideo = index
-        this.currentIndex = index
-        // this.disableButtonDown = false
-        // this.disableButtonUp = false
-        this.disableOnOffbuttons(contents)
+            context.startAt = curTime;
+            this.dialog = true;
+            this.$route.meta.hideNavbar = this.dialog;
+            this.currentVideo = context
+            // console.log(this.currentVideo)
+            this.currentScrollVideo = index
+            this.currentIndex = index
+
+            let text1 = "getVideoLike";
+
+            console.log("Listening to:", context.thumbnail)
+            socket.on(context.thumbnail, (views) => {
+                console.log(context.thumbnail, views);
+                context.views = views;
+            });
+            console.log("Listening to:", text1.concat(context.thumbnail))
+            socket.on(text1.concat(context.thumbnail), (views) => {
+                console.log(context.thumbnail, views);
+                context.views = views;
+            });
+            // this.disableButtonDown = false
+            // this.disableButtonUp = false
+            this.disableOnOffbuttons(contents)
         },
         disableOnOffbuttons(contents) {
-        if (this.currentIndex == 0) {
-            this.disableButtonUp = true
-        } else {
-            this.disableButtonUp = false
-        }
-        if (this.currentIndex == ((contents.length) - 1)) {
-            this.disableButtonDown = true
-        } else {
-            this.disableButtonDown = false
-        }
-
+            if (this.currentIndex == 0) {
+                this.disableButtonUp = true
+            } else {
+                this.disableButtonUp = false
+            }
+            if (this.currentIndex == ((contents.length) - 1)) {
+                this.disableButtonDown = true
+            } else {
+                this.disableButtonDown = false
+            }
         },
         goDown(contents) {
             console.log("goDown")
@@ -464,9 +544,9 @@ export default {
             console.log(this.currentIndex)
             // handle the out of order video
 
-
             if (this.currentIndex < contents.length - 1) {
                 this.currentIndex = this.currentIndex + 1
+                this.toggleVideoSocket(this.currentVideo, contents[this.currentIndex])
                 this.currentVideo = contents[this.currentIndex]
                 console.log(this.currentVideo)
                 // this.disableButtonUp = false
@@ -483,6 +563,7 @@ export default {
 
             if (this.currentIndex > 0) {
                 this.currentIndex = this.currentIndex - 1
+                this.toggleVideoSocket(this.currentVideo, contents[this.currentIndex])
                 this.currentVideo = contents[this.currentIndex]
                 // this.disableButtonDown = false
             } else {
@@ -506,19 +587,23 @@ export default {
             // // this.disableButtonUp = false
             // this.disableOnOffbuttons()
         },
-        closeDialog() {
-        this.dialog = false;
-        this.$route.meta.hideNavbar = this.dialog;
-        setTimeout(() => this.scrollToMyIndex(), 1000);
-        },
+        closeDialog(context) {
+            let text1 = "getVideoLike";
 
+            console.log("Not listening to:", context.thumbnail)
+            console.log("Not listening to:", text1.concat(context.thumbnail))
+            socket.off(context.thumbnail);
+            socket.off(text1.concat(context.thumbnail))
+
+            this.dialog = false;
+            this.$route.meta.hideNavbar = this.dialog;
+            setTimeout(() => this.scrollToMyIndex(), 1000);
+        },
         scrollToMyIndex() {
-        console.log(this.currentScrollVideo)
-        const [el] = this.$refs[this.currentScrollVideo];
-        el.scrollIntoView({ behavior: "smooth" });
+            console.log(this.currentScrollVideo)
+            const [el] = this.$refs[this.currentScrollVideo];
+            el.scrollIntoView({ behavior: "smooth" });
         },
-
-
     },
     beforeMount() {
       this.username = this.$store.state.username
