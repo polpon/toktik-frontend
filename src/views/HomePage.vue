@@ -221,7 +221,9 @@
                             align-items: center;"
                             @click="toggleLikeIcon(content)">
 
-                            <v-icon :icon="currentIcon" color="black"/>
+                            <v-icon v-if="content.userLiked" icon="mdi-heart" color="black"/>
+                            <v-icon v-else icon="mdi-heart-outline" color="black"/>
+                            <!-- <v-icon :icon="currentIcon" color="black"/> -->
                         </div>
                         <div style="display: flex;
                             justify-content: center;
@@ -296,8 +298,14 @@ import "v3-infinite-loading/lib/style.css";
 import debounce from 'lodash.debounce';
 import { state, socket, setSocket } from "@/socket";
 
-const updateLike = debounce((like) => {
-    console.log(like)
+const updateLike = debounce((like, name) => {
+    console.log("Updated like to :", name)
+
+    if(like){
+        axios.post("/increment-video-like", {"filename":name})
+    } else {
+        axios.post("/unlike-video", {"filename": name})
+    }
 }, 1000)
 
 
@@ -330,17 +338,10 @@ export default {
         ],
     }),
     methods: {
-        toggleLikeIcon(context) {
-            this.currentIcon = this.currentIcon === "mdi-heart-outline" ? "mdi-heart" : "mdi-heart-outline";
-
-            context.likeCount = this.currentIcon === "mdi-heart" ? context.likeCount + 1 : context.likeCount - 1;
-
-            updateLike(context.likeCount);
-        },
         async infiniteHandler($state) {
             console.log("loading...");
 
-            await axios.post("/get_random_video").then(res => {
+            await axios.post("/get_random_video").then(async res => {
                 console.log(res);
                 for (let each in res.data) {
                     const content = {
@@ -349,8 +350,9 @@ export default {
                         thumbnail: res.data[each].uuid,
                         owner: res.data[each].owner_uuid,
                         views: res.data[each].view_count,
+                        likeCount: res.data[each].likes_count,
+                        userLiked: (await axios.post("/check_like", {'filename': res.data[each].uuid})).data,
                         startAt: 0,
-                        likeCount: 0,
                         videoOptions: {
                             // autoplay: true,
                             // muted: true,
@@ -372,10 +374,19 @@ export default {
                 }
             })
         },
+        toggleLikeIcon(context) {
+            context.userLiked = context.userLiked ? false : true;
+
+            context.likeCount = context.userLiked ? context.likeCount + 1 : context.likeCount - 1;
+
+            updateLike(context.userLiked, context.thumbnail);
+        },
         visibilityChanged(isVisible, entry, index, context) {
             const player = this.$refs.videoPlayer[index];
 
             console.log("Visibility:", context.thumbnail, isVisible)
+
+            let text1 = "getVideoLike";
 
             if (isVisible) {
                 console.log("Listening to:", context.thumbnail)
@@ -383,9 +394,16 @@ export default {
                     console.log(context.thumbnail, views);
                     context.views = views;
                 });
+                console.log("Listening to:", text1.concat(context.thumbnail))
+                socket.on(text1.concat(context.thumbnail), (views) => {
+                    console.log(context.thumbnail, views);
+                    context.views = views;
+                });
             } else {
                 console.log("Not listening to:", context.thumbnail)
+                console.log("Not listening to:", text1.concat(context.thumbnail))
                 socket.off(context.thumbnail);
+                socket.off(text1.concat(context.thumbnail))
             }
 
             // console.log(isVisible)
