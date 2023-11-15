@@ -26,7 +26,7 @@
                         padding: 15px;
                         flex-direction: column;"
                         >
-                          <p>someone {{notification.type}} {{ notification.video_uuid }}</p>  
+                          <p>someone {{notification.title}} {{ notification.video_uuid }}</p>  
                         </div>
                     </div>
                     <!-- <InfiniteLoading @infinite="infiniteNotificationHandler" :distance="700" /> -->
@@ -99,6 +99,7 @@ export default {
         video_uuid : "sample video name",
         read : false,
         type: "random",
+        title: "some cool video",
         day : "",
       },
       {
@@ -107,6 +108,7 @@ export default {
         video_uuid : "sample video name",
         read : false,
         type: "random",
+        title: "some cool video",
         day : "",
       },
 
