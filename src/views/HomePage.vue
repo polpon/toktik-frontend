@@ -28,10 +28,10 @@
             display: flex;
             flex-direction: column;
             width: 30%;
-            height: 100%;"
+            height: 100%;
+            background-color: white;"
             >
-                <div style="
-                    background-color: white;">
+                <div>
                     <article class="p-6 text-base bg-white" style="min-height: 25vh;  overflow: auto;">
                         <footer class="flex justify-between items-center mb-2">
                             <div class="flex items-center text-xl">
@@ -360,6 +360,7 @@ export default {
         async infiniteCommentHandler(filename) {
             console.log("loading...", filename);
 
+            console.log("getting comment from - ", this.comments.length > 0 ? this.comments[(this.comments.length)-1].id : 0);
             await axios.post("/get-comment-number-by-ten", {"filename": filename, "start_from": this.comments.length > 0 ? this.comments[(this.comments.length)-1].id : 0})
             .then(res => {
                 console.log(res);
@@ -396,9 +397,11 @@ export default {
         },
         toggleVideoSocket(fromContext, toContext) {
             // Open new socket, close old one
+            this.comments = [];
 
             // Opening New Socket
             let videoLike = "getVideoLike";
+            let commentText = "getNewComment";
 
             console.log("Listening to:", toContext.thumbnail)
             socket.on(toContext.thumbnail, (views) => {
@@ -412,11 +415,23 @@ export default {
                 toContext.likeCount = like;
             });
 
+            console.log("Listening to:", commentText.concat(toContext.thumbnail))
+            socket.on(commentText.concat(toContext.thumbnail), (comment) => {
+                console.log(toContext.thumbnail, "comments", comment);
+                this.comments.push(comment);
+                this.comments.sort((a, b) => b.id - a.id);
+                // context.views = views;
+            });
+
+            this.infiniteCommentHandler(toContext.thumbnail)
+
             // Close Old Socket
-            console.log("Not listening to:", fromContext.thumbnail)
-            console.log("Not listening to:", videoLike.concat(fromContext.thumbnail))
+            console.log("Not listening to:", fromContext.thumbnail);
+            console.log("Not listening to:", videoLike.concat(fromContext.thumbnail));
+            console.log("Not listening to:", commentText.concat(fromContext.thumbnail));
             socket.off(fromContext.thumbnail);
-            socket.off(videoLike.concat(fromContext.thumbnail))
+            socket.off(videoLike.concat(fromContext.thumbnail));
+            socket.off(commentText.concat(fromContext.thumbnail));
         },
         visibilityChanged(isVisible, entry, index, context) {
             const player = this.$refs.videoPlayer[index];
@@ -478,6 +493,7 @@ export default {
             // console.log(this.currentVideo)
             this.currentScrollVideo = index
             this.currentIndex = index
+            this.comments = [];
 
             let text1 = "getVideoLike";
             let text2 = "getNewComment";
@@ -571,6 +587,7 @@ export default {
 
             console.log("Not listening to:", context.thumbnail)
             console.log("Not listening to:", text1.concat(context.thumbnail))
+            console.log("Not listening to:", text2.concat(context.thumbnail))
             socket.off(context.thumbnail);
             socket.off(text1.concat(context.thumbnail))
             socket.off(text2.concat(context.thumbnail))
