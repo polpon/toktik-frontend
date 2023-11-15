@@ -6,7 +6,41 @@
             </v-img>
           </a>
         </v-toolbar-title>
-        <div>
+        <div class="text-center ma-4" v-if="getLoginStatus()">
+        <v-menu
+        location="center"
+        location-strategy="connected"
+        >
+            <template  v-slot:activator="{ props }">
+              <v-btn icon="mdi-bell-ring-outline" v-bind="props" @click="openNotification">
+              </v-btn>
+            </template>
+                  <div  style="overflow-y: auto; margin-top: 50px; background-color: rgb(39, 39, 42); border-radius: 10px; max-height: 320px; outline: auto;">
+                    <div v-for="notification in notifications" :key="notification.id">
+                        <div class="flex block" style="
+                        border: 1px solid rgb(196, 196, 196);
+                        border-radius: 5%;
+                        margin: 24px;
+                        margin-top: 10px;
+                        margin-bottom: 0%;
+                        padding: 15px;
+                        flex-direction: column;"
+                        >
+                          <p>someone {{notification.type}} {{ notification.video_uuid }}</p>  
+                        </div>
+                    </div>
+                    <!-- <InfiniteLoading @infinite="infiniteNotificationHandler" :distance="700" /> -->
+                    <InfiniteLoading @infinite="infiniteNotificationHandler" :distance="700">
+                        <template v-slot:spinner>
+                            <div style="margin: 24px;"></div>
+                        </template>
+                    </InfiniteLoading>
+                </div>
+          </v-menu>
+          </div>   
+
+
+          <div>
             <RouterLink
             style="text-decoration: none; color: inherit;"
             :to="{ name: 'login' }">
@@ -50,18 +84,70 @@
 <script>
 
 // import store from './store'
-
+// import { socket } from "@/socket";
+import InfiniteLoading from "v3-infinite-loading";
+import axios from 'axios';
 export default {
-  // data: () => ({
-  //   getLoginStatus: this.$store.state.logined,
+  components: {InfiniteLoading},
+  
+  data: () => ({
+    username: "",
+    notifications: [
+      {
+        id : "11",
+        user_id : "",
+        video_uuid : "sample video name",
+        read : false,
+        type: "random",
+        day : "",
+      },
+      {
+        id : "12",
+        user_id : "",
+        video_uuid : "sample video name",
+        read : false,
+        type: "random",
+        day : "",
+      },
 
-  // }),
+    ],
+    location: 'bottom',
+
+  }),
   methods: {
     getLoginStatus() {
       // console.log(this.$store.state.logined)
       return this.$store.state.logined
-    }
+    },
+    openNotification() {
+      let text = "getNewNotification";
+      console.log("Listening to:", text.concat(this.username))
+            socket.on(text.concat(this.username), (notification) => {
+                console.log(this.username, "notification", notification);
+                this.notifications.push(notification)
+                this.notifications.sort((a, b) => b.id - a.id)
+                // context.views = views;
+      });
+    },
+    async infiniteNotificationHandler() {
+            console.log("loading...");
+            console.log(this.notifications.length > 0 ? this.notifications[this.notifications.length - 1].id : 0)
+            await axios.post("/get_ten_notification_by_owner_id", {"start_from": this.notifications.length > 0 ? this.notifications[this.notifications.length - 1].id : 0})
+            .then(res => {
+                console.log(res);
+                for (let each in res.data) {
+                    this.notifications.push(res.data[each])
+                }
+                this.notifications.sort((a, b) => b.id - a.id);
+            })
+            console.log("Notification", this.notifications)            
+        },
 
+  },
+  beforeMount() {
+      this.username = this.$store.state.username;
+
+      
   },
   // beforeMount() {
   //   this.getLoginStatus()
