@@ -8,7 +8,7 @@ export const state = reactive({
 });
 
 // "undefined" means the URL will be computed from the `window.location` object
-const URL = process.env.NODE_ENV === "production" ? undefined : "ws://localhost:8000";
+const URL = process.env.NODE_ENV === "production" ? undefined : "ws://localhost:3030";
 
 export const socket = io(URL);
 
@@ -27,13 +27,12 @@ export const deleteSocket = (socketname) => {
 socket.on("connect", () => {
   state.connected = true;
   console.log("I am now connected")
+  socket.on("1234", (...args) => {
+    console.log(args)
+})
 });
 
 socket.on("disconnect", () => {
   state.connected = false;
   console.log("I am now g o n")
 });
-
-socket.on("hello", (...args) => {
-    console.log(args)
-})

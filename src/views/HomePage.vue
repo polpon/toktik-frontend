@@ -79,20 +79,43 @@
                         </div>
 
                         <div style="
-                            border: 2px solid grey;
-                            width: 60px;
-                            padding: 5px;
-                            margin-top: 15px;
-                            margin-left: 13px;
-                            border-radius: 10px;
-                            display: inline-block;" @click="toggleLikeIcon(this.currentVideo)">
+                        border: 2px solid grey;
+                        width: 60px;
+                        padding: 5px;
+                        margin-top: 15px;
+                        margin-left: 13px;
+                        border-radius: 10px;
+                        display: inline-block;" @click="toggleLikeIcon(this.currentVideo)"
+                        >
                             <v-icon icon="mdi-poll" color="black"/>
 
                             {{ this.currentVideo.views }}
                         </div>
                     </article>
 
-                    <v-divider class="border-opacity-75"></v-divider>
+                    <!-- <v-divider class="border-opacity-75"></v-divider> -->
+
+                    <div style="
+                        border: 1px solid rgb(196, 196, 196);
+                        border-radius: 10px;
+                        margin: 0 24px 0 24px;"
+                        >
+                        <v-text-field
+                        v-model="commentText"
+                        :disabled="commentDisable"
+                        hide-details
+                        class="bg-white"
+                        label="Add a comment"
+                        variant="plain"
+                        append-icon="mdi-send"
+                        type="text"
+                        clearable
+                        style="margin: 0px 24px 13px 24px;"
+                        @click:append="sendComment(this.currentVideo)"
+                        ></v-text-field>
+                    </div>
+
+                    <!-- <v-divider class="border-opacity-75"></v-divider> -->
                 </div>
                 <div class="bg-white" style="overflow-y: auto;">
                     <div v-for="comment in comments" :key="comment.id">
@@ -100,6 +123,7 @@
                         border: 1px solid rgb(196, 196, 196);
                         border-radius: 5%;
                         margin: 24px;
+                        margin-top: 10px;
                         margin-bottom: 0%;
                         padding: 15px;
                         flex-direction: column;"
@@ -115,11 +139,11 @@
                                 {{ comment.username }}
                             </div>
                             <div>
-                                <p class="break-all" style="">{{ comment.comment }}</p>
+                                <p class="break-all" style="">{{ comment.content }}</p>
                             </div>
                         </div>
                     </div>
-                    <InfiniteLoading @infinite="infiniteCommentHandler" :distance="700">
+                    <InfiniteLoading @infinite="infiniteCommentHandler(this.currentVideo.thumbnail)" :distance="700">
                         <template v-slot:spinner>
                             <div style="margin: 24px;"></div>
                         </template>
@@ -212,7 +236,7 @@
                         font-weight: bold;
                         font-size: 12px;">
 
-                        1000
+                        {{ content.commentCount}}
                     </div>
 
                     <div style="margin: 5px;"></div>
@@ -284,31 +308,15 @@ export default {
         disableButtonDown: false,
         time: "Feb. 8, 2022",
         comment_buttons: true,
+        commentDisable: false,
+        commentText: "",
         comments: [
-            {
-                id: 1,
-                username: "Andrew Alfred",
-                comment: 'This is super coolas doask;djs;ka kq;lwj dqwkdpoajkck;asjdk;ajsdkjaskldjaklsdjsaldksajkldasjdklasjdalksjdskdjaksldjasdjaksllk;dhf wabkufhbew;fblsadasdasdass ad;ljbjhfk asdh;fudasjfl;kasdfj ialsdfjfklasdfk;sdjflaskd;fasdklfklasdjfksjf;kasjfsjadfjsadfjsdlkfjakdsl',
-                time: "2 min"
-            },
-            {
-                id: 2,
-                username: "Andrew 2Alfred",
-                comment: 'This is super coolas doask;djs;ka kq;lwj dqwkdpoajkck;asjdk;ajsdkjaskldjaklsdjsaldksajkldasjdklasjdalksjdskdjaksldjasdjaksllk;dhf wabkufhbew;fblsadasdasdass ad;ljbjhfk asdh;fudasjfl;kasdfj ialsdfjfklasdfk;sdjflaskd;fasdklfklasdjfksjf;kasjfsjadfjsadfjsdlkfjakdsl',
-                time: "2 min"
-            },
-            {
-                id: 3,
-                username: "Andrew 3Alfred",
-                comment: 'This is super coolas doask;djs;ka kq;lwj dqwkdpoajkck;asjdk;ajsdkjaskldjaklsdjsaldksajkldasjdklasjdalksjdskdjaksldjasdjaksllk;dhf wabkufhbew;fblsadasdasdass ad;ljbjhfk asdh;fudasjfl;kasdfj ialsdfjfklasdfk;sdjflaskd;fasdklfklasdjfksjf;kasjfsjadfjsadfjsdlkfjakdsl',
-                time: "2 min"
-            },
-            {
-                id: 4,
-                username: "Andrew 4Alfred",
-                comment: 'This is super coolas doask;djs;ka kq;lwj dqwkdpoajkck;asjdk;ajsdkjaskldjaklsdjsaldksajkldasjdklasjdalksjdskdjaksldjasdjaksllk;dhf wabkufhbew;fblsadasdasdass ad;ljbjhfk asdh;fudasjfl;kasdfj ialsdfjfklasdfk;sdjflaskd;fasdklfklasdjfksjf;kasjfsjadfjsadfjsdlkfjakdsl',
-                time: "2 min"
-            },
+            // {
+            //     id: 1,
+            //     username: "Andrew Alfred",
+            //     comment: 'This is super coolas doask;djs;ka kq;lwj dqwkdpoajkck;asjdk;ajsdkjaskldjaklsdjsaldksajkldasjdklasjdalksjdskdjaksldjasdjaksllk;dhf wabkufhbew;fblsadasdasdass ad;ljbjhfk asdh;fudasjfl;kasdfj ialsdfjfklasdfk;sdjflaskd;fasdklfklasdjfksjf;kasjfsjadfjsadfjsdlkfjakdsl',
+            //     time: "2 min"
+            // },
         ],
     }),
     methods: {
@@ -325,6 +333,7 @@ export default {
                         owner: res.data[each].owner_uuid,
                         views: res.data[each].view_count,
                         likeCount: res.data[each].likes_count,
+                        commentCount: res.data[each].comment_count,
                         userLiked: (await axios.post("/check_like", {'filename': res.data[each].uuid})).data,
                         startAt: 0,
                         videoOptions: {
@@ -348,10 +357,33 @@ export default {
                 }
             })
         },
-        async infiniteCommentHandler($state) {
-            console.log("loading...");
+        async infiniteCommentHandler(filename) {
+            console.log("loading...", filename);
 
+            await axios.post("/get-comment-number-by-ten", {"filename": filename, "start_from": this.comments.length > 0 ? this.comment[0].id : 0})
+            .then(res => {
+                console.log(res);
+                // const set = new Set(this.comments);
+                for (let each in res.data) {
+                    this.comments.push(res.data[each])
+                }
+            })
 
+            console.log("Comment", this.comments)
+        },
+        async sendComment(context) {
+            console.log("Sent Comment: ,", this.commentText)
+            this.commentDisabled = true;
+
+            await axios.post("/add-comment-video", {"filename": context.thumbnail, "comment": this.commentText})
+            .then(() => {
+                this.commentText = "";
+            })
+            .catch(() => {
+            })
+            .finally(() => {
+                this.commentDisabled = false;
+            })
         },
         toggleLikeIcon(context) {
             context.userLiked = context.userLiked ? false : true;
