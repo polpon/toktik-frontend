@@ -360,13 +360,15 @@ export default {
         async infiniteCommentHandler(filename) {
             console.log("loading...", filename);
 
-            await axios.post("/get-comment-number-by-ten", {"filename": filename, "start_from": this.comments.length > 0 ? this.comment[0].id : 0})
+            await axios.post("/get-comment-number-by-ten", {"filename": filename, "start_from": this.comments.length > 0 ? this.comments[(this.comments.length)-1].id : 0})
             .then(res => {
                 console.log(res);
                 // const set = new Set(this.comments);
                 for (let each in res.data) {
                     this.comments.push(res.data[each])
                 }
+
+                this.comments.sort((a, b) => b.id - a.id);
             })
 
             console.log("Comment", this.comments)
@@ -405,9 +407,9 @@ export default {
             });
 
             console.log("Listening to:", videoLike.concat(toContext.thumbnail))
-            socket.on(videoLike.concat(toContext.thumbnail), (views) => {
-                console.log(toContext.thumbnail, views);
-                toContext.views = views;
+            socket.on(videoLike.concat(toContext.thumbnail), (like) => {
+                console.log(toContext.thumbnail, like);
+                toContext.likeCount = like;
             });
 
             // Close Old Socket
@@ -478,6 +480,7 @@ export default {
             this.currentIndex = index
 
             let text1 = "getVideoLike";
+            let text2 = "getNewComment";
 
             console.log("Listening to:", context.thumbnail)
             socket.on(context.thumbnail, (views) => {
@@ -485,9 +488,17 @@ export default {
                 context.views = views;
             });
             console.log("Listening to:", text1.concat(context.thumbnail))
-            socket.on(text1.concat(context.thumbnail), (views) => {
-                console.log(context.thumbnail, views);
-                context.views = views;
+            socket.on(text1.concat(context.thumbnail), (like) => {
+                console.log(context.thumbnail, like);
+                context.like = like;
+            });
+
+            console.log("Listening to:", text2.concat(context.thumbnail))
+            socket.on(text2.concat(context.thumbnail), (comment) => {
+                console.log(context.thumbnail, "comments", comment);
+                this.comments.push(comment)
+                this.comments.sort((a, b) => b.id - a.id)
+                // context.views = views;
             });
             // this.disableButtonDown = false
             // this.disableButtonUp = false
@@ -556,11 +567,13 @@ export default {
         },
         closeDialog(context) {
             let text1 = "getVideoLike";
+            let text2 = "getNewComment";
 
             console.log("Not listening to:", context.thumbnail)
             console.log("Not listening to:", text1.concat(context.thumbnail))
             socket.off(context.thumbnail);
             socket.off(text1.concat(context.thumbnail))
+            socket.off(text2.concat(context.thumbnail))
 
             this.dialog = false;
             this.$route.meta.hideNavbar = this.dialog;

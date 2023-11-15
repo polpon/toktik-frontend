@@ -29,6 +29,9 @@ socket.on("connect", () => {
   console.log("I am now connected")
   socket.on("1234", (...args) => {
     console.log(args)
+  })
+  socket.on("4321", (...args) => {
+    console.log(args)
 })
 });
 
