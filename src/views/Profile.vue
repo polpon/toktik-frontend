@@ -66,6 +66,53 @@
                 style="height: 20%; width: 20%; padding-left: 10px; padding-right: 10px; padding-top: 5px;"
                 alt="Not Found"
                 >
+                
+                <div style="width: 10px;" class="place-self-center">
+                    <v-badge :content="video.likes_count" style="padding-bottom: 10px;">
+                        <div style=
+                        "background-color: #cccccc;
+                        width: 35px;
+                        height: 35px;
+                        border-radius: 50%;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;"
+                        >
+                        <v-icon icon="mdi-heart" color="red"/>
+                        </div>
+                    </v-badge>
+
+                    <v-badge :content="video.comment_count" style="padding-bottom: 10px;">
+                        <div style=
+                            "background-color: #cccccc;
+                            width: 35px;
+                            height: 35px;
+                            border-radius: 50%;
+                            
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;"
+                            >
+                            <v-icon icon="mdi-message-text-outline" color="black"/>
+                        </div>
+                    </v-badge>
+
+                    <v-badge :content="video.view_count" style="padding-bottom: 10px;">
+                        <div style=
+                        "background-color: #cccccc;
+                        width: 35px;
+                        height: 35px;
+                        border-radius: 50%;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;"
+                        >
+
+                        <v-icon icon="mdi-poll" color="black"/>
+                    </div>
+                    </v-badge> 
+                </div>
+
                 <v-spacer></v-spacer>
                 <div class="place-self-center" style="font-size: 2.2vh;">
                     Title: {{ video.title }}
@@ -89,6 +136,7 @@
 <script>
 import axios from 'axios';
 import Sidebar from '@/components/Sidebar';
+import { socket } from "@/socket";
 
 export default {
     components: {Sidebar,},
@@ -97,11 +145,11 @@ export default {
         username: "",
 
         videos: [
-            {
-                // name: "super cool video",
-                status: "done",
-                thumbnail: "./src/assets/frames-diff-01.png"
-            },
+            // {
+            //     // name: "super cool video",
+            //     status: "done",
+            //     thumbnail: "./src/assets/frames-diff-01.png"
+            // },
         ],
     }),
     methods: {
@@ -127,9 +175,52 @@ export default {
       this.username = this.$store.state.username
 
       await axios.get('/get_user_videos').then((res) => {
-        this.videos = res.data;
+        // this.videos = res.data;
+
+        console.log(this.videos)
+        for (let each in res.data) {
+            this.videos.push(res.data[each])
+            // this.videos.push(res.data[each])
+            console.log(this.videos[each].view_count)
+            let videoLike = "getVideoLike";
+            let commentText = "getNewComment";
+            console.log("Listening to:", this.videos[each].uuid)
+            socket.on(this.videos[each].uuid, (views) => {
+                console.log(this.videos[each].uuid, views);
+                this.videos[each].view_count = views;
+            });
+
+            console.log("Listening to:", videoLike.concat(this.videos[each].uuid))
+            socket.on(videoLike.concat(this.videos[each].uuid), (like) => {
+                console.log(this.videos[each].uuid, like);
+                this.videos[each].likes_count = like;
+            });
+
+            console.log("Listening to:", commentText.concat(this.videos[each].uuid))
+            socket.on(commentText.concat(this.videos[each].uuid), (comment) => {
+                console.log(this.videos[each].uuid, "comments", comment);
+                this.videos[each].comment_count = this.videos[each].comment_count + 1
+                // context.views = views;
+            });
+        }
+        console.log(this.videos)
+
+
         }).catch((err) => {
         })
+    },
+    beforeUnmount() {
+        let videoLike = "getVideoLike";
+        let commentText = "getNewComment";
+        for (let each in this.videos) {
+            console.log("Not listening to:", this.videos[each].uuid);
+            console.log("Not listening to:", videoLike.concat(this.videos[each].uuid));
+            console.log("Not listening to:", commentText.concat(this.videos[each].uuid));
+            socket.off(this.videos[each].uuid);
+            socket.off(videoLike.concat(this.videos[each].uuid));
+            socket.off(commentText.concat(this.videos[each].uuid));
+        }
+        
     }
 }
 
