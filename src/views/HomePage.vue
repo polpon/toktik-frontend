@@ -85,7 +85,7 @@
                         margin-top: 15px;
                         margin-left: 13px;
                         border-radius: 10px;
-                        display: inline-block;" @click="toggleLikeIcon(this.currentVideo)"
+                        display: inline-block;"
                         >
                             <v-icon icon="mdi-poll" color="black"/>
 
@@ -225,7 +225,7 @@
                         display: flex;
                         justify-content: center;
                         align-items: center;"
-                        @click="toggleLikeIcon(content)">
+                        >
 
                         <v-icon icon="mdi-message-text-outline" color="black"/>
                     </div>
@@ -236,7 +236,7 @@
                         font-weight: bold;
                         font-size: 12px;">
 
-                        {{ content.commentCount}}
+                        {{ content.commentCount }}
                     </div>
 
                     <div style="margin: 5px;"></div>
@@ -249,7 +249,7 @@
                         display: flex;
                         justify-content: center;
                         align-items: center;"
-                        @click="toggleLikeIcon(content)">
+                        >
 
                         <v-icon icon="mdi-poll" color="black"/>
                     </div>
@@ -452,9 +452,9 @@ export default {
                     context.views = views;
                 });
                 console.log("Listening to:", text1.concat(context.thumbnail))
-                socket.on(text1.concat(context.thumbnail), (views) => {
-                    console.log(context.thumbnail, views);
-                    context.views = views;
+                socket.on(text1.concat(context.thumbnail), (like) => {
+                    console.log(context.thumbnail, like);
+                    context.likeCount = like;
                 });
             } else {
                 console.log("Not listening to:", context.thumbnail)
@@ -511,7 +511,7 @@ export default {
             console.log("Listening to:", text1.concat(context.thumbnail))
             socket.on(text1.concat(context.thumbnail), (like) => {
                 console.log(context.thumbnail, like);
-                context.like = like;
+                context.likeCount = like;
             });
 
             console.log("Listening to:", text2.concat(context.thumbnail))
