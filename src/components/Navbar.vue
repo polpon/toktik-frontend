@@ -16,7 +16,7 @@
               </v-btn>
             </template>
                   <div  style="overflow-y: auto; margin-top: 50px; background-color: rgb(39, 39, 42); border-radius: 10px; max-height: 320px; outline: auto;">
-                    <div v-for="notification in notifications" :key="notification.id">
+                    <div v-for="notification in this.$myNotifications" :key="notification.id">
                         <div class="flex block" style="
                         border: 1px solid rgb(196, 196, 196);
                         border-radius: 5%;
@@ -26,18 +26,12 @@
                         padding: 15px;
                         flex-direction: column;"
                         >
-                          <p>someone {{notification.type}} {{notification.title}} </p>  
+                          <p>{{notification.username}} {{notification.type}} {{notification.title}} </p>
                         </div>
                     </div>
-                    <!-- <InfiniteLoading @infinite="infiniteNotificationHandler" :distance="700" /> -->
-                    <InfiniteLoading @infinite="infiniteNotificationHandler" :distance="700">
-                        <template v-slot:spinner>
-                            <div style="margin: 24px;"></div>
-                        </template>
-                    </InfiniteLoading>
                 </div>
           </v-menu>
-          </div>   
+          </div>
 
 
           <div>
@@ -82,12 +76,15 @@
 import { socket } from "@/socket";
 import InfiniteLoading from "v3-infinite-loading";
 import axios from 'axios';
+
+// export const notifications = [];
+
 export default {
   components: {InfiniteLoading},
-  
+
   data: () => ({
     username: "",
-    notifications: [
+    notifications: [],
       // {
       //   id : "11",
       //   user_id : "",
@@ -107,7 +104,7 @@ export default {
       //   day : "",
       // },
 
-    ],
+    // ],
     location: 'bottom',
 
   }),
@@ -117,17 +114,19 @@ export default {
       return this.$store.state.logined
     },
     openNotification() {
+      console.log(this.$myNotifications)
+      // this.notifications = notifications;
       // console.log("Open Notification")
-      // console.log(this.username)
-      let text = "getNewNotification";
-      // "getNewNotification" + username
-      console.log("Listening to:", text.concat(this.username))
-            socket.on(text.concat(this.username), (notification) => {
-                console.log(this.username, "notification", notification);
-                this.notifications.push(notification)
-                this.notifications.sort((a, b) => b.id - a.id)
-                // context.views = views;
-      });
+      // console.log(this.$store.state.username)
+      // let text = "getNewNotification";
+      // // "getNewNotification" + username
+      // console.log("Listening to:", text.concat(this.$store.state.username))
+      //       socket.on(text.concat(this.$store.state.username), (notification) => {
+      //           console.log(this.$store.state.username, "notification", notification);
+      //           this.notifications.push(notification)
+      //           this.notifications.sort((a, b) => b.id - a.id)
+      //           // context.views = views;
+      // });
       // socket.off(text.concat(this.username));
 
 
@@ -135,28 +134,22 @@ export default {
       // socket.off(text.concat(this.username));
     },
     async infiniteNotificationHandler() {
-            console.log("loading...");
-            console.log(this.notifications.length > 0 ? this.notifications[this.notifications.length - 1].id : 0)
-            await axios.post("/get_ten_notification_by_owner_id", {"start_from": this.notifications.length > 0 ? this.notifications[(this.notifications.length)-1].id : 0})
-            .then(res => {
-                console.log(res);
-                for (let each in res.data) {
-                    this.notifications.push(res.data[each])
-                }
-                this.notifications.sort((a, b) => b.id - a.id);
-            })
-            console.log("Notification", this.notifications)            
-        },
-
+      console.log("loading...");
+      console.log(this.$myNotifications.length > 0 ? this.$myNotifications[this.$myNotifications.length - 1].id : 0)
+      await axios.post("/get_ten_notification_by_owner_id", {"start_from": this.$myNotifications.length > 0 ? this.$myNotifications[(this.$myNotifications.length)-1].id : 0})
+      .then(res => {
+        console.log(res);
+        for (let each in res.data) {
+          this.$myNotifications.push(res.data[each])
+        }
+        this.$myNotifications.sort((a, b) => b.id - a.id);
+      })
+      console.log("Notification", this.$myNotifications)
+    },
   },
-  beforeMount() {
-      this.username = this.$store.state.username;
-
-      
-  },
-  // beforeMount() {
-  //   this.getLoginStatus()
-  //   }
+  computed() {
+    () => infiniteNotificationHandler();
+  }
 }
 
 </script>

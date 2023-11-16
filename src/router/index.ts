@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import type { CustomAxiosRequestConfig } from 'axios-auth-refresh/dist/utils';
 import store from '../store';
 import { socket } from "@/socket";
+import { globals } from '@/main';
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
@@ -66,28 +67,61 @@ export async function isAuthenticated() {
   // const customAxiosRequestConfig: CustomAxiosRequestConfig = { skipAuthRefresh: true };
 
   return await axios.get('/whoami')
-    .then(resp => { return resp.status == 200})
-    .catch(err => false)
-}
-
-export async function getData() {
-  const customAxiosRequestConfig: CustomAxiosRequestConfig = { skipAuthRefresh: true };
-  await axios.get('/whoami', customAxiosRequestConfig)
     .then(resp => {
-      const username = resp.data.username
-      const videos: Array<string> = resp.data.videos
-      store.commit('get_user_data', {username, videos})
+        const username = resp.data.username;
+        console.log("INSIDE WHOAM I", username)
+
+        // fresh = store username and username none. username none and store username has = logout
+
+        if (username && !store.state.username) {
+          const text = "getNewNotification";
+
+          axios.post("/get_all_notification_by_owner_id")
+          .then(res => {
+            console.log(res);
+            for (const each in res.data) {
+              globals.$myNotifications.push(res.data[each])
+            }
+            globals.$myNotifications.sort((a: any, b: any) => b.id - a.id);
+          })
+
+          socket.on(text.concat(username), (notification) => {
+            console.log("Recieved Noti.")
+            globals.$myNotifications.push(notification);
+            globals.$myNotifications.sort((a: any, b: any) => b.id - a.id);
+          })
+        }
+
+        console.log("Right now I am: ", username);
+        const videos: Array<string> = resp.data.videos;
+        store.commit('get_user_data', {username, videos});
+        return resp.status == 200;
+      })
+    .catch(err => {
+      return false;
     })
 }
 
+// export async function getData() {
+//   const customAxiosRequestConfig: CustomAxiosRequestConfig = { skipAuthRefresh: true };
+//   await axios.get('/whoami', customAxiosRequestConfig)
+//     .then(resp => {
+//       const username = resp.data.username
+//       const videos: Array<string> = resp.data.videos
+//       store.commit('get_user_data', {username, videos})
+//     })
+// }
+
 router.beforeEach(async (to, from, next) => {
-  let text = "getNewNotification";
+  console.log(from.path)
+  // console.log("\n\n\n\ntriggered\n\n\n", store.state.username);
+  const text = "getNewNotification";
   if (to.meta.requiresAuth)
   {
     // const token = localStorage.getItem('token');
     if (await isAuthenticated()) {
       // User is authenticated, proceed to the route
-      getData();
+      // getData();
       store.commit('login')
       next();
 
@@ -102,7 +136,7 @@ router.beforeEach(async (to, from, next) => {
   else if (to.meta.checkAuth)
   {
     if (await isAuthenticated()){
-      getData();
+      // getData();
       store.commit('login')
       next();
 
@@ -120,6 +154,7 @@ router.beforeEach(async (to, from, next) => {
     next();
 
   }
+  console.log("\n\n\nCOnsole\n\n\n")
 });
 
 export default router

@@ -27,12 +27,12 @@ export const deleteSocket = (socketname) => {
 socket.on("connect", () => {
   state.connected = true;
   console.log("I am now connected")
-  socket.on("1234", (...args) => {
-    console.log(args)
-  })
+  // socket.on("1234", (...args) => {
+  //   console.log(args)
+  // })
   socket.on("4321", (...args) => {
     console.log(args)
-})
+  })
 });
 
 socket.on("disconnect", () => {

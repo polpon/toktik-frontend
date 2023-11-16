@@ -387,7 +387,7 @@ export default {
             .finally(() => {
                 this.commentDisabled = false;
             })
-            await axios.post("/notification-all-relate-user", {"filename": context.thumbnail, "type": "comment"})
+            await axios.post("/notification-all-relate-user", {"filename": context.thumbnail,"user_uuid": this.$store.state.username, "type": "comment"})
         },
         async toggleLikeIcon(context) {
             context.userLiked = context.userLiked ? false : true;
@@ -397,7 +397,7 @@ export default {
             updateLike(context.userLiked, context.thumbnail);
 
             if (context.userLiked == true) {
-                await axios.post("/notification-all-relate-user", {"filename": context.thumbnail, "type": "like"})
+                await axios.post("/notification-all-relate-user", {"filename": context.thumbnail, "user_uuid": this.$store.state.username, "type": "like"})
             }
         },
         toggleVideoSocket(fromContext, toContext) {
@@ -408,19 +408,19 @@ export default {
             let videoLike = "getVideoLike";
             let commentText = "getNewComment";
 
-            console.log("Listening to:", toContext.thumbnail)
+            // console.log("Listening to:", toContext.thumbnail)
             socket.on(toContext.thumbnail, (views) => {
                 console.log(toContext.thumbnail, views);
                 toContext.views = views;
             });
 
-            console.log("Listening to:", videoLike.concat(toContext.thumbnail))
+            // console.log("Listening to:", videoLike.concat(toContext.thumbnail))
             socket.on(videoLike.concat(toContext.thumbnail), (like) => {
                 console.log(toContext.thumbnail, like);
                 toContext.likeCount = like;
             });
 
-            console.log("Listening to:", commentText.concat(toContext.thumbnail))
+            // console.log("Listening to:", commentText.concat(toContext.thumbnail))
             socket.on(commentText.concat(toContext.thumbnail), (comment) => {
                 console.log(toContext.thumbnail, "comments", comment);
                 this.comments.push(comment);
@@ -431,9 +431,9 @@ export default {
             this.infiniteCommentHandler(toContext.thumbnail)
 
             // Close Old Socket
-            console.log("Not listening to:", fromContext.thumbnail);
-            console.log("Not listening to:", videoLike.concat(fromContext.thumbnail));
-            console.log("Not listening to:", commentText.concat(fromContext.thumbnail));
+            // console.log("Not listening to:", fromContext.thumbnail);
+            // console.log("Not listening to:", videoLike.concat(fromContext.thumbnail));
+            // console.log("Not listening to:", commentText.concat(fromContext.thumbnail));
             socket.off(fromContext.thumbnail);
             socket.off(videoLike.concat(fromContext.thumbnail));
             socket.off(commentText.concat(fromContext.thumbnail));
@@ -446,7 +446,7 @@ export default {
             let text1 = "getVideoLike";
 
             if (isVisible) {
-                console.log("Listening to:", context.thumbnail)
+                // console.log("Listening to:", context.thumbnail)
                 socket.on(context.thumbnail, (views) => {
                     console.log(context.thumbnail, views);
                     context.views = views;
@@ -457,8 +457,8 @@ export default {
                     context.likeCount = like;
                 });
             } else {
-                console.log("Not listening to:", context.thumbnail)
-                console.log("Not listening to:", text1.concat(context.thumbnail))
+                // console.log("Not listening to:", context.thumbnail)
+                // console.log("Not listening to:", text1.concat(context.thumbnail))
                 socket.off(context.thumbnail);
                 socket.off(text1.concat(context.thumbnail))
             }

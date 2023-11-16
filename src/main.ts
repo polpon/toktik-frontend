@@ -32,6 +32,8 @@ import InfiniteLoading from "v3-infinite-loading";
 import "v3-infinite-loading/lib/style.css";
 import VueObserveVisibility from 'vue-observe-visibility'
 
+import { socket } from "@/socket";
+
 axios.defaults.baseURL = '/api';
 
 
@@ -53,6 +55,8 @@ axios.interceptors.response.use(function (response) {
     // Do something with response error
     if (error.response.config.url == "/refresh" && error.response.status == 401)
     {
+    const text: String = "getNewNotification";
+    socket.off(text.concat(store.state.username))
     router.push('/login')
     }
     return Promise.reject(error);
@@ -78,7 +82,6 @@ XMLHttpRequest.prototype.open = function (
 };
 
 
-
 // Instantiate the interceptor
 createAuthRefreshInterceptor(
   axios,
@@ -101,6 +104,9 @@ app.use(VueSmoothScroll)
 app.use(store)
 app.use(VueObserveVisibility)
 app.component("infinite-loading", InfiniteLoading);
+app.config.globalProperties.$myNotifications = [];
 registerPlugins(app)
+
+export const globals = app.config.globalProperties;
 
 app.mount('#app')
