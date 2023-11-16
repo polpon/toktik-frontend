@@ -26,7 +26,7 @@
                         padding: 15px;
                         flex-direction: column;"
                         >
-                          <p>someone {{notification.title}} {{ notification.video_uuid }}</p>  
+                          <p>someone {{notification.type}} {{notification.title}} </p>  
                         </div>
                     </div>
                     <!-- <InfiniteLoading @infinite="infiniteNotificationHandler" :distance="700" /> -->
@@ -71,11 +71,6 @@
                 Logout
               </v-btn>
             </RouterLink>
-
-
-
-
-
           </div>
 
       </v-app-bar>
@@ -84,7 +79,7 @@
 <script>
 
 // import store from './store'
-// import { socket } from "@/socket";
+import { socket } from "@/socket";
 import InfiniteLoading from "v3-infinite-loading";
 import axios from 'axios';
 export default {
@@ -93,24 +88,24 @@ export default {
   data: () => ({
     username: "",
     notifications: [
-      {
-        id : "11",
-        user_id : "",
-        video_uuid : "sample video name",
-        read : false,
-        type: "random",
-        title: "some cool video",
-        day : "",
-      },
-      {
-        id : "12",
-        user_id : "",
-        video_uuid : "sample video name",
-        read : false,
-        type: "random",
-        title: "some cool video",
-        day : "",
-      },
+      // {
+      //   id : "11",
+      //   user_id : "",
+      //   video_uuid : "sample video name",
+      //   read : false,
+      //   type: "random",
+      //   title: "some cool video",
+      //   day : "",
+      // },
+      // {
+      //   id : "12",
+      //   user_id : "",
+      //   video_uuid : "sample video name",
+      //   read : false,
+      //   type: "random",
+      //   title: "some cool video",
+      //   day : "",
+      // },
 
     ],
     location: 'bottom',
@@ -122,7 +117,10 @@ export default {
       return this.$store.state.logined
     },
     openNotification() {
+      // console.log("Open Notification")
+      // console.log(this.username)
       let text = "getNewNotification";
+      // "getNewNotification" + username
       console.log("Listening to:", text.concat(this.username))
             socket.on(text.concat(this.username), (notification) => {
                 console.log(this.username, "notification", notification);
@@ -130,11 +128,16 @@ export default {
                 this.notifications.sort((a, b) => b.id - a.id)
                 // context.views = views;
       });
+      // socket.off(text.concat(this.username));
+
+
+
+      // socket.off(text.concat(this.username));
     },
     async infiniteNotificationHandler() {
             console.log("loading...");
             console.log(this.notifications.length > 0 ? this.notifications[this.notifications.length - 1].id : 0)
-            await axios.post("/get_ten_notification_by_owner_id", {"start_from": this.notifications.length > 0 ? this.notifications[this.notifications.length - 1].id : 0})
+            await axios.post("/get_ten_notification_by_owner_id", {"start_from": this.notifications.length > 0 ? this.notifications[(this.notifications.length)-1].id : 0})
             .then(res => {
                 console.log(res);
                 for (let each in res.data) {

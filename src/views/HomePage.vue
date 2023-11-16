@@ -387,13 +387,18 @@ export default {
             .finally(() => {
                 this.commentDisabled = false;
             })
+            await axios.post("/notification-all-relate-user", {"filename": context.thumbnail, "type": "comment"})
         },
-        toggleLikeIcon(context) {
+        async toggleLikeIcon(context) {
             context.userLiked = context.userLiked ? false : true;
 
             context.likeCount = context.userLiked ? context.likeCount + 1 : context.likeCount - 1;
 
             updateLike(context.userLiked, context.thumbnail);
+
+            if (context.userLiked == true) {
+                await axios.post("/notification-all-relate-user", {"filename": context.thumbnail, "type": "like"})
+            }
         },
         toggleVideoSocket(fromContext, toContext) {
             // Open new socket, close old one

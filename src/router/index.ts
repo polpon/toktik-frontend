@@ -2,6 +2,7 @@ import axios from 'axios';
 import { createRouter, createWebHistory } from 'vue-router'
 import type { CustomAxiosRequestConfig } from 'axios-auth-refresh/dist/utils';
 import store from '../store';
+import { socket } from "@/socket";
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
@@ -80,6 +81,7 @@ export async function getData() {
 }
 
 router.beforeEach(async (to, from, next) => {
+  let text = "getNewNotification";
   if (to.meta.requiresAuth)
   {
     // const token = localStorage.getItem('token');
@@ -91,6 +93,7 @@ router.beforeEach(async (to, from, next) => {
 
     } else {
       // User is not authenticated, redirect to login
+      socket.off(text.concat(store.state.username));
       store.commit('logout')
       next('/login');
 
@@ -99,10 +102,12 @@ router.beforeEach(async (to, from, next) => {
   else if (to.meta.checkAuth)
   {
     if (await isAuthenticated()){
+      getData();
       store.commit('login')
       next();
 
     } else {
+      socket.off(text.concat(store.state.username));
       store.commit('logout')
       next()
 
@@ -110,6 +115,7 @@ router.beforeEach(async (to, from, next) => {
   }
   else {
     // Non-protected route, allow access
+    socket.off(text.concat(store.state.username));
     store.commit('logout')
     next();
 
