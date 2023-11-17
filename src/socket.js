@@ -11,7 +11,7 @@ export const state = reactive({
 const URL = process.env.NODE_ENV === "production" ? "ws://ws.localhost" : "ws://toktik-socket:3030";
 
 export const socket = io(URL, {
-  secure: true,
+  // secure: true,
   withCredentials: true,
 });
 
