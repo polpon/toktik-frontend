@@ -434,9 +434,9 @@ export default {
             // console.log("Not listening to:", fromContext.thumbnail);
             // console.log("Not listening to:", videoLike.concat(fromContext.thumbnail));
             // console.log("Not listening to:", commentText.concat(fromContext.thumbnail));
-            socket.off(fromContext.thumbnail);
-            socket.off(videoLike.concat(fromContext.thumbnail));
-            socket.off(commentText.concat(fromContext.thumbnail));
+            // socket.off(fromContext.thumbnail);
+            // socket.off(videoLike.concat(fromContext.thumbnail));
+            // socket.off(commentText.concat(fromContext.thumbnail));
         },
         visibilityChanged(isVisible, entry, index, context) {
             const player = this.$refs.videoPlayer[index];
@@ -459,8 +459,8 @@ export default {
             } else {
                 // console.log("Not listening to:", context.thumbnail)
                 // console.log("Not listening to:", text1.concat(context.thumbnail))
-                socket.off(context.thumbnail);
-                socket.off(text1.concat(context.thumbnail))
+                // socket.off(context.thumbnail);
+                // socket.off(text1.concat(context.thumbnail))
             }
 
             // console.log(isVisible)
@@ -587,15 +587,15 @@ export default {
             // this.disableOnOffbuttons()
         },
         closeDialog(context) {
-            let text1 = "getVideoLike";
-            let text2 = "getNewComment";
+            // let text1 = "getVideoLike";
+            // let text2 = "getNewComment";
 
-            console.log("Not listening to:", context.thumbnail)
-            console.log("Not listening to:", text1.concat(context.thumbnail))
-            console.log("Not listening to:", text2.concat(context.thumbnail))
-            socket.off(context.thumbnail);
-            socket.off(text1.concat(context.thumbnail))
-            socket.off(text2.concat(context.thumbnail))
+            // console.log("Not listening to:", context.thumbnail)
+            // console.log("Not listening to:", text1.concat(context.thumbnail))
+            // console.log("Not listening to:", text2.concat(context.thumbnail))
+            // socket.off(context.thumbnail);
+            // socket.off(text1.concat(context.thumbnail))
+            // socket.off(text2.concat(context.thumbnail))
 
             this.dialog = false;
             this.$route.meta.hideNavbar = this.dialog;
