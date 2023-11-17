@@ -1,7 +1,7 @@
 <template>
       <v-app-bar style="display: flex; align-items:center; background-color: rgb(24 24 27);">
         <v-toolbar-title style="padding-left: 10px; padding-right: 40px; color: #f5e0dc;">
-          <a href="/" style="-webkit-text-fill-color:whitesmoke; text-decoration: none; ">
+          <a href="/login" style="-webkit-text-fill-color:whitesmoke; text-decoration: none; ">
             <v-img src="/src/assets/toktik.png" height="50px" width="120px">
             </v-img>
           </a>
@@ -35,13 +35,13 @@
 
 
           <div>
-            <RouterLink
+            <!-- <RouterLink
             style="text-decoration: none; color: inherit;"
-            :to="{ name: 'login' }">
-            <v-btn v-if="getLoginStatus() == false" variant="flat" color="primary" style="margin:5px; margin-right: 10px;">
+            :to="{ name: 'login' }"> -->
+            <v-btn v-if="getLoginStatus() == false" @click="pushLogin" variant="flat" color="primary" style="margin:5px; margin-right: 10px;">
             Login
             </v-btn>
-            </RouterLink>
+            <!-- </RouterLink> -->
 
             <RouterLink
                 style="text-decoration: none; color: inherit;"
@@ -71,17 +71,9 @@
 </template>
 
 <script>
-
-// import store from './store'
-import { socket } from "@/socket";
-import InfiniteLoading from "v3-infinite-loading";
 import axios from 'axios';
 
-// export const notifications = [];
-
 export default {
-  components: {InfiniteLoading},
-
   data: () => ({
     username: "",
     notifications: [],
@@ -109,6 +101,9 @@ export default {
 
   }),
   methods: {
+    pushLogin() {
+      this.$router.push("/login")
+    },
     getLoginStatus() {
       // console.log(this.$store.state.logined)
       return this.$store.state.logined

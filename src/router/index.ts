@@ -118,32 +118,18 @@ router.beforeEach(async (to, from, next) => {
   const text = "getNewNotification";
   if (to.meta.requiresAuth)
   {
-    // const token = localStorage.getItem('token');
-    if (await isAuthenticated()) {
+    const auth = await isAuthenticated()
+
+    if (auth) {
       // User is authenticated, proceed to the route
-      // getData();
       store.commit('login')
       next();
 
     } else {
       // User is not authenticated, redirect to login
-      socket.off(text.concat(store.state.username));
-      store.commit('logout')
       next('/login');
-
-    }
-  }
-  else if (to.meta.checkAuth)
-  {
-    if (await isAuthenticated()){
-      // getData();
-      store.commit('login')
-      next();
-
-    } else {
       socket.off(text.concat(store.state.username));
-      store.commit('logout')
-      next()
+      store.commit('logout');
 
     }
   }
@@ -154,7 +140,6 @@ router.beforeEach(async (to, from, next) => {
     next();
 
   }
-  console.log("\n\n\nCOnsole\n\n\n")
 });
 
 export default router
