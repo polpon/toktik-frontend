@@ -12,7 +12,8 @@ const URL = process.env.NODE_ENV === "production" ? "ws://ws.localhost" : "ws://
 
 export const socket = io(URL, {
   // secure: true,
-  withCredentials: true,
+  // withCredentials: true,
+  transports: [ "websocket" ],
 });
 
 export const setSocket = (socketname) => {
